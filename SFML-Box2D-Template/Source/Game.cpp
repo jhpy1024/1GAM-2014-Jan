@@ -5,9 +5,11 @@ Game::Game()
 	, Height(720)
 	, Title("1GAM | Jan | 2014")
 	, TimePerFrame(sf::seconds(1.f / 60.f))
+	, Gravity(0.f, 10.f)
 	, window_(sf::VideoMode(Width, Height), Title)
+	, world_(new b2World(Gravity))
 {
-
+	
 }
 
 void Game::handleInput()
@@ -27,6 +29,8 @@ void Game::update(sf::Time delta)
 {
 	for (auto& entity : entities_)
 		entity->update(delta);
+
+	world_->Step(TimePerFrame.asSeconds(), 6, 3);
 }
 
 void Game::render()

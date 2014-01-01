@@ -31,6 +31,7 @@ private:
 	const int Height;
 	const std::string Title;
 	const sf::Time TimePerFrame;
+	const b2Vec2 Gravity;
 
 	b2World* world_;
 	sf::RenderWindow window_;

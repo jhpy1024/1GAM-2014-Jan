@@ -2,6 +2,7 @@
 #define ENTITY_HPP
 
 #include <SFML/Graphics.hpp>
+#include <Box2D/Box2D.h>
 
 class Game;
 class Entity
@@ -13,6 +14,7 @@ public:
 	virtual void update(sf::Time delta) = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
 
+	b2Body* getBody() { return body_; }
 	sf::Sprite& getSprite() { return sprite_; }
 	float getX() const { return getPosition().x; }
 	float getY() const { return getPosition().y; }
@@ -25,6 +27,7 @@ public:
 
 protected:
 	Game* game_;
+	b2Body* body_;
 	sf::Sprite sprite_;
 };
 
