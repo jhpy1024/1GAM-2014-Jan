@@ -1,4 +1,6 @@
 #include "../Include/Game.hpp"
+#include "../Include/Utils.hpp"
+#include "../Include/Player.hpp"
 
 Game::Game()
 	: Width(1280)
@@ -9,7 +11,23 @@ Game::Game()
 	, window_(sf::VideoMode(Width, Height), Title)
 	, world_(new b2World(Gravity))
 {
-	
+	entities_.push_back(std::unique_ptr<Entity>(new Player(sf::Vector2f(Width / 2.f, Height / 2.f), this)));
+
+	b2BodyDef bodyDef;
+	bodyDef.position.Set(pixelsToMeters(Width / 2.f), pixelsToMeters(Height * 0.95f));
+	bodyDef.type = b2_staticBody;
+
+	b2PolygonShape shape;
+	shape.SetAsBox(pixelsToMeters(Width / 2.f), pixelsToMeters(20 / 2.f));
+
+	groundBody_ = world_->CreateBody(&bodyDef);
+	groundBody_->CreateFixture(&shape, 1.f);
+
+	groundShape_.setFillColor(sf::Color::Green);
+	groundShape_.setSize(sf::Vector2f(Width, 20.f));
+	groundShape_.setOrigin(groundShape_.getLocalBounds().left + groundShape_.getLocalBounds().width / 2.f, 
+		groundShape_.getLocalBounds().top + groundShape_.getLocalBounds().height / 2.f);
+	groundShape_.setPosition(Width / 2.f, Height * 0.95f);
 }
 
 void Game::handleInput()
@@ -40,6 +58,7 @@ void Game::render()
 	for (auto& entity : entities_)
 		entity->render(window_);
 
+	window_.draw(groundShape_);
 	window_.display();
 }
 

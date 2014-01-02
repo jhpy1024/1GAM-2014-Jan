@@ -36,6 +36,9 @@ private:
 	b2World* world_;
 	sf::RenderWindow window_;
 	std::vector<std::unique_ptr<Entity>> entities_;
+
+	b2Body* groundBody_;
+	sf::RectangleShape groundShape_;
 };
 
 #endif
