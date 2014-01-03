@@ -8,6 +8,7 @@
 #include <Box2D/Box2D.h>
 
 #include "Entity.hpp"
+#include "tmx/MapLoader.h"
 
 class Game
 {
@@ -39,6 +40,8 @@ private:
 
 	b2Body* groundBody_;
 	sf::RectangleShape groundShape_;
+
+	tmx::MapLoader mapLoader_;
 };
 
 #endif

@@ -10,6 +10,7 @@ Game::Game()
 	, Gravity(0.f, 10.f)
 	, window_(sf::VideoMode(Width, Height), Title)
 	, world_(new b2World(Gravity))
+	, mapLoader_("Assets/")
 {
 	entities_.push_back(std::unique_ptr<Entity>(new Player(sf::Vector2f(Width / 2.f, Height / 2.f), this)));
 
@@ -28,6 +29,10 @@ Game::Game()
 	groundShape_.setOrigin(groundShape_.getLocalBounds().left + groundShape_.getLocalBounds().width / 2.f, 
 		groundShape_.getLocalBounds().top + groundShape_.getLocalBounds().height / 2.f);
 	groundShape_.setPosition(Width / 2.f, Height * 0.95f);
+
+	mapLoader_.Load("map.tmx");
+
+
 }
 
 void Game::handleInput()
@@ -54,6 +59,9 @@ void Game::update(sf::Time delta)
 void Game::render()
 {
 	window_.clear(sf::Color::Red);
+
+	window_.draw(mapLoader_);
+	mapLoader_.Draw(window_, tmx::MapLayer::Debug);
 
 	for (auto& entity : entities_)
 		entity->render(window_);
