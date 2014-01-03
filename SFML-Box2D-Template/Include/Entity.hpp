@@ -1,6 +1,7 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+#include "Message.hpp"
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 
@@ -8,13 +9,15 @@ class Game;
 class Entity
 {
 public:
-	Entity(const sf::Vector2f& position, Game* game);
+	Entity(const sf::Vector2f& position, Game* game, const std::string& id);
 
 	virtual void handleInput() = 0;
 	virtual void update(sf::Time delta) = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
+	virtual void handleMessage(Message& message) = 0;
 
 	b2Body* getBody() { return body_; }
+	std::string getId() const { return id_; }
 	sf::Sprite& getSprite() { return sprite_; }
 	float getX() const { return getPosition().x; }
 	float getY() const { return getPosition().y; }
@@ -29,6 +32,7 @@ protected:
 	Game* game_;
 	b2Body* body_;
 	sf::Sprite sprite_;
+	std::string id_;
 };
 
 #endif

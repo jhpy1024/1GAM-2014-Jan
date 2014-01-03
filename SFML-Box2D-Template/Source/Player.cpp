@@ -1,9 +1,11 @@
 #include "../Include/Player.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Game.hpp"
+#include "../Include/GetPositionMessage.hpp"
+#include "../Include/SetPositionMessage.hpp"
 
 Player::Player(const sf::Vector2f& position, Game* game)
-	: Entity(position, game)
+	: Entity(position, game, "player")
 	, Speed(1.f)
 	, width_(70)
 	, height_(94)
@@ -61,6 +63,28 @@ void Player::render(sf::RenderWindow& window)
 	}
 
 	window.draw(sprite_);
+}
+
+void Player::handleMessage(Message& message)
+{
+	switch (message.getType())
+	{
+	case GetPositionMsg:
+		{
+			GetPositionMessage& msg = static_cast<GetPositionMessage&>(message);
+			msg.setPosition(getPosition());
+		}
+		break;
+	case SetPositionMsg:
+		{
+			SetPositionMessage& msg = static_cast<SetPositionMessage&>(message);
+			sprite_.setPosition(msg.getPosition());
+			body_->SetTransform(b2Vec2(pixelsToMeters(msg.getPosition().x), pixelsToMeters(msg.getPosition().y)), body_->GetAngle());
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void Player::updateAnimation()

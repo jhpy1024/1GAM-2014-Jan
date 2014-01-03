@@ -1,6 +1,8 @@
 #include "../Include/Game.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
+#include "../Include/GetPositionMessage.hpp"
+#include "../Include/SetPositionMessage.hpp"
 
 Game::Game()
 	: Width(1280)
@@ -25,14 +27,14 @@ Game::Game()
 	groundBody_->CreateFixture(&shape, 1.f);
 
 	groundShape_.setFillColor(sf::Color::Green);
-	groundShape_.setSize(sf::Vector2f(Width, 20.f));
+	groundShape_.setSize(sf::Vector2f(static_cast<float>(Width), 20.f));
 	groundShape_.setOrigin(groundShape_.getLocalBounds().left + groundShape_.getLocalBounds().width / 2.f, 
 		groundShape_.getLocalBounds().top + groundShape_.getLocalBounds().height / 2.f);
 	groundShape_.setPosition(Width / 2.f, Height * 0.95f);
 
 	mapLoader_.Load("map.tmx");
-
-
+	
+	view_.setSize(Width, Height);
 }
 
 void Game::handleInput()
@@ -50,6 +52,8 @@ void Game::handleInput()
 
 void Game::update(sf::Time delta)
 {
+	updateView();
+
 	for (auto& entity : entities_)
 		entity->update(delta);
 
@@ -60,6 +64,7 @@ void Game::render()
 {
 	window_.clear(sf::Color::Red);
 
+	window_.setView(view_);
 	window_.draw(mapLoader_);
 	mapLoader_.Draw(window_, tmx::MapLayer::Debug);
 
@@ -68,6 +73,22 @@ void Game::render()
 
 	window_.draw(groundShape_);
 	window_.display();
+}
+
+void Game::updateView()
+{
+	GetPositionMessage msg("player");
+	sendMessage(msg);
+	view_.setCenter(msg.getPosition());
+}
+
+void Game::sendMessage(Message& message)
+{
+	for (auto& entity : entities_)
+	{
+		if (message.getTargetId() == entity->getId())
+			entity->handleMessage(message);
+	}
 }
 
 void Game::run()

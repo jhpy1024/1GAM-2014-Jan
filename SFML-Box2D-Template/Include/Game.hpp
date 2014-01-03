@@ -8,6 +8,7 @@
 #include <Box2D/Box2D.h>
 
 #include "Entity.hpp"
+#include "Message.hpp"
 #include "tmx/MapLoader.h"
 
 class Game
@@ -16,6 +17,7 @@ public:
 	Game();
 
 	void run();
+	void sendMessage(Message& message);
 
 	b2World* getWorld() { return world_; }
 	int getWidth() const { return Width;  }
@@ -26,6 +28,8 @@ private:
 	void handleInput();
 	void update(sf::Time delta);
 	void render();
+
+	void updateView();
 
 private:
 	const int Width;
@@ -42,6 +46,8 @@ private:
 	sf::RectangleShape groundShape_;
 
 	tmx::MapLoader mapLoader_;
+
+	sf::View view_;
 };
 
 #endif

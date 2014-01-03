@@ -11,6 +11,7 @@ public:
 	void handleInput() override;
 	void update(sf::Time delta) override;
 	void render(sf::RenderWindow& window) override;
+	void handleMessage(Message& message) override;
 
 private:
 	void updateAnimation();
