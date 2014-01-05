@@ -3,6 +3,8 @@
 #include "../Include/Game.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
+#include "../Include/GetVelocityMessage.hpp"
+#include "../Include/SetVelocityMessage.hpp"
 
 Player::Player(const sf::Vector2f& position, Game* game)
 	: Entity(position, game, "player")
@@ -28,6 +30,8 @@ Player::Player(const sf::Vector2f& position, Game* game)
 
 	body_ = game->getWorld()->CreateBody(&bodyDef);
 	body_->CreateFixture(&shape, 1.f);
+	body_->SetFixedRotation(true);
+	body_->SetLinearDamping(2.f);
 }
 
 void Player::handleInput()
@@ -42,6 +46,9 @@ void Player::handleInput()
 		direction_ = Direction::Right;
 		body_->ApplyLinearImpulse(b2Vec2(Speed, 0), body_->GetWorldCenter(), true);
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		body_->ApplyLinearImpulse(b2Vec2(0, -Speed), body_->GetWorldCenter(), true);
 }
 
 void Player::update(sf::Time delta)
@@ -80,6 +87,18 @@ void Player::handleMessage(Message& message)
 			SetPositionMessage& msg = static_cast<SetPositionMessage&>(message);
 			sprite_.setPosition(msg.getPosition());
 			body_->SetTransform(b2Vec2(pixelsToMeters(msg.getPosition().x), pixelsToMeters(msg.getPosition().y)), body_->GetAngle());
+		}
+		break;
+	case GetVelocityMsg:
+		{	
+			GetVelocityMessage& msg = static_cast<GetVelocityMessage&>(message);
+			msg.setVelocity(body_->GetLinearVelocity().x, body_->GetLinearVelocity().y);
+		};
+		break;
+	case SetVelocityMsg:
+		{
+			SetVelocityMessage& msg = static_cast<SetVelocityMessage&>(message);
+			body_->SetLinearVelocity(b2Vec2(msg.getVelocity().x, msg.getVelocity().y));
 		}
 		break;
 	default:

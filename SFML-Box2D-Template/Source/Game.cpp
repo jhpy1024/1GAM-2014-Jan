@@ -1,8 +1,10 @@
 #include "../Include/Game.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
+#include "../Include/tmx/tmx2box2d.h"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
+#include "../Include/SetVelocityMessage.hpp"
 
 Game::Game()
 	: Width(1280)
@@ -14,27 +16,34 @@ Game::Game()
 	, world_(new b2World(Gravity))
 	, mapLoader_("Assets/")
 {
-	entities_.push_back(std::unique_ptr<Entity>(new Player(sf::Vector2f(Width / 2.f, Height / 2.f), this)));
+	createEntities();
+	createWorld();
 
-	b2BodyDef bodyDef;
-	bodyDef.position.Set(pixelsToMeters(Width / 2.f), pixelsToMeters(Height * 0.95f));
-	bodyDef.type = b2_staticBody;
-
-	b2PolygonShape shape;
-	shape.SetAsBox(pixelsToMeters(Width / 2.f), pixelsToMeters(20 / 2.f));
-
-	groundBody_ = world_->CreateBody(&bodyDef);
-	groundBody_->CreateFixture(&shape, 1.f);
-
-	groundShape_.setFillColor(sf::Color::Green);
-	groundShape_.setSize(sf::Vector2f(static_cast<float>(Width), 20.f));
-	groundShape_.setOrigin(groundShape_.getLocalBounds().left + groundShape_.getLocalBounds().width / 2.f, 
-		groundShape_.getLocalBounds().top + groundShape_.getLocalBounds().height / 2.f);
-	groundShape_.setPosition(Width / 2.f, Height * 0.95f);
-
-	mapLoader_.Load("map.tmx");
-	
 	view_.setSize(Width, Height);
+}
+
+void Game::createEntities()
+{
+	entities_.push_back(std::unique_ptr<Entity>(new Player(sf::Vector2f(Width / 2.f, 100.f), this)));
+}
+
+void Game::createWorld()
+{
+	mapLoader_.Load("map.tmx");
+	std::vector<tmx::MapLayer>& layers = mapLoader_.GetLayers();
+
+	for (auto& layer : layers)
+	{
+		if (layer.name == "Static")
+		{
+			for (auto& obj : layer.objects)
+			{
+				auto body = tmx::BodyCreator::Add(obj, *world_);
+				body->SetTransform(b2Vec2(body->GetPosition().x, -body->GetPosition().y), body->GetAngle());
+				body->SetFixedRotation(true);
+			}
+		}
+	}
 }
 
 void Game::handleInput()
@@ -48,6 +57,19 @@ void Game::handleInput()
 
 	for (auto& entity : entities_)
 		entity->handleInput();
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+	{
+		SetVelocityMessage setVel("player", 0.f, 0.f);
+		SetPositionMessage setPos("player", Width / 2.f, Height / 2.f);
+		sendMessage(setPos);
+		sendMessage(setVel);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		view_.zoom(1.2f);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		view_.zoom(0.8f);
 }
 
 void Game::update(sf::Time delta)
@@ -66,12 +88,10 @@ void Game::render()
 
 	window_.setView(view_);
 	window_.draw(mapLoader_);
-	mapLoader_.Draw(window_, tmx::MapLayer::Debug);
 
 	for (auto& entity : entities_)
 		entity->render(window_);
 
-	window_.draw(groundShape_);
 	window_.display();
 }
 
@@ -79,14 +99,14 @@ void Game::updateView()
 {
 	GetPositionMessage msg("player");
 	sendMessage(msg);
-	view_.setCenter(msg.getPosition());
+	view_.setCenter(sf::Vector2f(msg.getPosition().x, Height / 2.f));
 }
 
 void Game::sendMessage(Message& message)
 {
 	for (auto& entity : entities_)
 	{
-		if (message.getTargetId() == entity->getId())
+		if (message.getTargetId() == entity->getId() || message.getTargetId() == "all")
 			entity->handleMessage(message);
 	}
 }

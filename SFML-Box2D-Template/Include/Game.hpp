@@ -25,6 +25,9 @@ public:
 	std::vector<std::unique_ptr<Entity>>& getEntities() { return entities_; }
 
 private:
+	void createEntities();
+	void createWorld();
+
 	void handleInput();
 	void update(sf::Time delta);
 	void render();
@@ -41,9 +44,6 @@ private:
 	b2World* world_;
 	sf::RenderWindow window_;
 	std::vector<std::unique_ptr<Entity>> entities_;
-
-	b2Body* groundBody_;
-	sf::RectangleShape groundShape_;
 
 	tmx::MapLoader mapLoader_;
 

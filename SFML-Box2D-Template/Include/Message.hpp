@@ -7,6 +7,8 @@ enum MessageType
 	{
 		SetPositionMsg,
 		GetPositionMsg,
+		GetVelocityMsg,
+		SetVelocityMsg,
 	};
 
 class Message
