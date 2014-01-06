@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 
 #include "Entity.hpp"
+#include "PlayerFootSensor.hpp"
 
 class Player : public Entity
 {
@@ -24,6 +25,14 @@ private:
 	int numFrames_;
 	sf::Texture spriteSheet_;
 	sf::Clock clock_;
+
+	int jumpStepsLeft_;
+	sf::Color startingColor_;
+
+	b2Body* footBody_;
+	b2Fixture* footFixture_;
+	PlayerFootSensor footSensor_;	
+	sf::RectangleShape sensorShape_;
 
 	enum class Direction { Left, Right };
 	Direction direction_;

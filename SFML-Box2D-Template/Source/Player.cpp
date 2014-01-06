@@ -1,6 +1,7 @@
 #include "../Include/Player.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Game.hpp"
+#include "../Include/PlayerFootSensor.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/GetVelocityMessage.hpp"
@@ -8,11 +9,13 @@
 
 Player::Player(const sf::Vector2f& position, Game* game)
 	: Entity(position, game, "player")
-	, Speed(1.f)
+	, Speed(5.f)
 	, width_(70)
 	, height_(94)
 	, currFrame_(0)
 	, numFrames_(11)
+	, jumpStepsLeft_(0)
+	, footSensor_(game)
 	, direction_(Direction::Right)
 {
 	spriteSheet_.loadFromFile("Assets/player.png");
@@ -20,7 +23,9 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
+	startingColor_ = sprite_.getColor();
 
+	// -- Creating main body --
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(pixelsToMeters(position.x), pixelsToMeters(position.y));
 	bodyDef.type = b2_dynamicBody;
@@ -32,28 +37,56 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	body_->CreateFixture(&shape, 1.f);
 	body_->SetFixedRotation(true);
 	body_->SetLinearDamping(2.f);
+	body_->SetUserData(this);
+
+	// -- Creating foot sensor --
+	b2BodyDef footDef;
+	footDef.position.Set(bodyDef.position.x, bodyDef.position.y + pixelsToMeters(height_ / 2.f));
+	footDef.type = b2_dynamicBody;
+	
+	shape.SetAsBox(pixelsToMeters(width_ / 10.f), pixelsToMeters(height_ / 15.f));
+	b2FixtureDef fixtureDef;
+	fixtureDef.isSensor = true;
+	fixtureDef.shape = &shape;
+	fixtureDef.userData = &footSensor_;
+
+	footBody_ = game->getWorld()->CreateBody(&footDef);
+	footBody_->CreateFixture(&fixtureDef);
+
+	sensorShape_.setSize(sf::Vector2f(width_ / 5.f, height_ / 7.5f));
+	sensorShape_.setOrigin(sensorShape_.getLocalBounds().left + sensorShape_.getLocalBounds().width / 2.f, 
+		sensorShape_.getLocalBounds().top + sensorShape_.getLocalBounds().height / 2.f);
 }
 
 void Player::handleInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		body_->ApplyLinearImpulse(b2Vec2(-Speed, 0), body_->GetWorldCenter(), true);
+		body_->SetLinearVelocity(b2Vec2(-Speed, body_->GetLinearVelocity().y));
 		direction_ = Direction::Left;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
+		body_->SetLinearVelocity(b2Vec2(Speed, body_->GetLinearVelocity().y));
 		direction_ = Direction::Right;
-		body_->ApplyLinearImpulse(b2Vec2(Speed, 0), body_->GetWorldCenter(), true);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-		body_->ApplyLinearImpulse(b2Vec2(0, -Speed), body_->GetWorldCenter(), true);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && footSensor_.getNumContacts() >= 2)
+		jumpStepsLeft_ = 6;
 }
 
 void Player::update(sf::Time delta)
 {
+	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
+	sensorShape_.setPosition(metersToPixels(footBody_->GetPosition().x), metersToPixels(footBody_->GetPosition().y));
+	std::cout << footSensor_.getNumContacts() << std::endl;
 	updateAnimation();
+
+	if (jumpStepsLeft_ > 0)
+	{
+		body_->ApplyForceToCenter(b2Vec2(0.f, -Speed * 5), true);
+		--jumpStepsLeft_;
+	}
 
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
 }
@@ -70,6 +103,7 @@ void Player::render(sf::RenderWindow& window)
 	}
 
 	window.draw(sprite_);
+	window.draw(sensorShape_);
 }
 
 void Player::handleMessage(Message& message)

@@ -2,9 +2,11 @@
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
 #include "../Include/tmx/tmx2box2d.h"
+#include "../Include/ContactListener.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
+#include "../Include/GetVelocityMessage.hpp"
 
 Game::Game()
 	: Width(1280)
@@ -12,14 +14,14 @@ Game::Game()
 	, Title("1GAM | Jan | 2014")
 	, TimePerFrame(sf::seconds(1.f / 60.f))
 	, Gravity(0.f, 10.f)
-	, window_(sf::VideoMode(Width, Height), Title)
+	, window_(sf::VideoMode(Width, Height), Title, sf::Style::Close)
 	, world_(new b2World(Gravity))
 	, mapLoader_("Assets/")
 {
 	createEntities();
 	createWorld();
-
-	view_.setSize(Width, Height);
+	
+	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
 }
 
 void Game::createEntities()
@@ -44,6 +46,8 @@ void Game::createWorld()
 			}
 		}
 	}
+
+	world_->SetContactListener(new ContactListener(this));
 }
 
 void Game::handleInput()
@@ -84,7 +88,7 @@ void Game::update(sf::Time delta)
 
 void Game::render()
 {
-	window_.clear(sf::Color::Red);
+	window_.clear(sf::Color::Black);
 
 	window_.setView(view_);
 	window_.draw(mapLoader_);
