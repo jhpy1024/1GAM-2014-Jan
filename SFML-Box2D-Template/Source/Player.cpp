@@ -18,6 +18,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, jumpStepsLeft_(0)
 	, footSensor_(game)
 	, direction_(Direction::Right)
+	, coins_(0)
 {
 	sprite_.setTexture(game->getTextureManager().getTexture("player"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
@@ -81,6 +82,7 @@ void Player::handleInput()
 
 void Player::update(sf::Time delta)
 {
+	std::printf("Coins: %d\n", coins_);
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
 	sensorShape_.setPosition(metersToPixels(footBody_->GetPosition().x), metersToPixels(footBody_->GetPosition().y));
 	updateAnimation();
@@ -141,6 +143,7 @@ void Player::handleMessage(Message& message)
 	case GotCoinMsg:
 		{
 			GotCoinMessage& msg = static_cast<GotCoinMessage&>(message);
+			coins_ += 10;
 		}
 		break;
 	default:

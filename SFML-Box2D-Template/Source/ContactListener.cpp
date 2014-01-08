@@ -20,9 +20,11 @@ ContactListener::ContactListener(Game* game)
 	beginFunctions_.push_back(
 	[game](Entity* entity)
 	{
-		auto coin = static_cast<Coin*>(entity);
 		if (entity->getId().find("coin") != entity->getId().npos)
+		{
+			auto coin = static_cast<Coin*>(entity);
 			game->sendMessage(GotCoinMessage("all", entity->getId(), *coin));
+		}
 	}
 	);
 

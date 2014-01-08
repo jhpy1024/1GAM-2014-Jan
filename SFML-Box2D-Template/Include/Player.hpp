@@ -35,6 +35,8 @@ private:
 
 	enum class Direction { Left, Right };
 	Direction direction_;
+
+	int coins_;
 };
 
 #endif
