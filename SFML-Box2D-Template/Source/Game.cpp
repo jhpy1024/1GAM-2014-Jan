@@ -25,6 +25,7 @@ Game::Game()
 	createWorld();
 	loadTextures();
 	
+	view_.setCenter(Width / 2.f, Height / 2.f);
 	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
 }
 
@@ -104,6 +105,7 @@ void Game::handleInput()
 			SetPositionMessage setPos("player", Width / 4.f, 100.f);
 			sendMessage(setPos);
 			sendMessage(setVel);
+			view_.setCenter(Width / 2.f, Height / 2.f);
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -158,7 +160,8 @@ void Game::updateView()
 {
 	GetPositionMessage msg("player");
 	sendMessage(msg);
-	view_.setCenter(sf::Vector2f(msg.getPosition().x, Height / 2.f));
+	if ((msg.getPosition().x >= Width / 2.f) && (msg.getPosition().x <= mapLoader_.GetMapSize().x - Width / 2.f))
+		view_.setCenter(sf::Vector2f(msg.getPosition().x, Height / 2.f));
 }
 
 void Game::sendMessage(Message& message)

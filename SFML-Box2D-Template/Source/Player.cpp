@@ -82,7 +82,6 @@ void Player::handleInput()
 
 void Player::update(sf::Time delta)
 {
-	std::printf("Coins: %d\n", coins_);
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
 	sensorShape_.setPosition(metersToPixels(footBody_->GetPosition().x), metersToPixels(footBody_->GetPosition().y));
 	updateAnimation();
