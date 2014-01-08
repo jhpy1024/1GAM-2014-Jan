@@ -22,7 +22,6 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
-	startingColor_ = sprite_.getColor();
 
 	// -- Creating main body --
 	b2BodyDef bodyDef;
@@ -78,7 +77,6 @@ void Player::update(sf::Time delta)
 {
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
 	sensorShape_.setPosition(metersToPixels(footBody_->GetPosition().x), metersToPixels(footBody_->GetPosition().y));
-	std::cout << footSensor_.getNumContacts() << std::endl;
 	updateAnimation();
 
 	if (jumpStepsLeft_ > 0)

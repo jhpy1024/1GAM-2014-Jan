@@ -15,6 +15,7 @@ void ContactListener::BeginContact(b2Contact* contact)
 	if (fixtureData)
 	{
 		auto entity = static_cast<Entity*>(fixtureData);
+		std::printf("Contact (A) - Entity ID: %s\n", entity->getId().c_str());
 		if (entity->getId() == "playerFootSensor")
 		{
 			auto sensor = static_cast<PlayerFootSensor*>(entity);
@@ -26,6 +27,7 @@ void ContactListener::BeginContact(b2Contact* contact)
 	if (fixtureData)
 	{
 		auto entity = static_cast<Entity*>(fixtureData);
+		std::printf("Contact (B) - Entity ID: %s\n", entity->getId().c_str());
 		if (entity->getId() == "playerFootSensor")
 		{
 			auto sensor = static_cast<PlayerFootSensor*>(entity);

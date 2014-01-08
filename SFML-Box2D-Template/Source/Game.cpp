@@ -1,4 +1,5 @@
 #include "../Include/Game.hpp"
+#include "../Include/Coin.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
 #include "../Include/tmx/tmx2box2d.h"
@@ -55,8 +56,14 @@ void Game::createWorld()
 				{
 					fixture->SetFriction(0.f);
 				}
-
-			}
+			} 
+		} else if (layer.name == "Coins")
+		{
+			for (auto& obj : layer.objects)
+			{
+				
+				entities_.push_back(std::unique_ptr<Entity>(new Coin(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this)));
+			} 
 		}
 	}
 

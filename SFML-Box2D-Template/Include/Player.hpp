@@ -26,7 +26,6 @@ private:
 	sf::Clock clock_;
 
 	int jumpStepsLeft_;
-	sf::Color startingColor_;
 
 	b2Body* footBody_;
 	b2Fixture* footFixture_;
