@@ -26,7 +26,7 @@ Game::Game()
 
 void Game::createEntities()
 {
-	entities_.push_back(std::unique_ptr<Entity>(new Player(sf::Vector2f(Width / 2.f, 100.f), this)));
+	entities_.push_back(std::unique_ptr<Entity>(new Player(sf::Vector2f(Width / 4.f, 100.f), this)));
 }
 
 void Game::createWorld()
@@ -43,6 +43,12 @@ void Game::createWorld()
 				auto body = tmx::BodyCreator::Add(obj, *world_);
 				body->SetTransform(b2Vec2(body->GetPosition().x, -body->GetPosition().y), body->GetAngle());
 				body->SetFixedRotation(true);
+				
+				for (auto fixture = body->GetFixtureList(); fixture ; fixture = fixture->GetNext())
+				{
+					fixture->SetFriction(0.f);
+				}
+
 			}
 		}
 	}
@@ -65,7 +71,7 @@ void Game::handleInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
 		SetVelocityMessage setVel("player", 0.f, 0.f);
-		SetPositionMessage setPos("player", Width / 2.f, Height / 2.f);
+		SetPositionMessage setPos("player", Width / 4.f, 100.f);
 		sendMessage(setPos);
 		sendMessage(setVel);
 	}
