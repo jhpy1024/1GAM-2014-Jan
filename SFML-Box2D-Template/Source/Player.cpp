@@ -18,8 +18,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, footSensor_(game)
 	, direction_(Direction::Right)
 {
-	spriteSheet_.loadFromFile("Assets/player.png");
-	sprite_.setTexture(spriteSheet_);
+	sprite_.setTexture(game->getTextureManager().getTexture("player"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);

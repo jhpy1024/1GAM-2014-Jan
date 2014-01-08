@@ -20,8 +20,15 @@ Game::Game()
 {
 	createEntities();
 	createWorld();
+	loadTextures();
 	
 	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
+}
+
+void Game::loadTextures()
+{
+	textureManager_.addTexture("player", "Assets/player.png");
+	textureManager_.addTexture("coin", "Assets/coin.png");
 }
 
 void Game::createEntities()

@@ -23,7 +23,6 @@ private:
 	int height_;
 	int currFrame_;
 	int numFrames_;
-	sf::Texture spriteSheet_;
 	sf::Clock clock_;
 
 	int jumpStepsLeft_;

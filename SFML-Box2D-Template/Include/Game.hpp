@@ -10,6 +10,7 @@
 #include "Entity.hpp"
 #include "Message.hpp"
 #include "tmx/MapLoader.h"
+#include "TextureManager.hpp"
 
 class Game
 {
@@ -22,11 +23,13 @@ public:
 	b2World* getWorld() { return world_; }
 	int getWidth() const { return Width;  }
 	int getHeight() const { return Height; }
+	TextureManager& getTextureManager() { return textureManager_; }
 	std::vector<std::unique_ptr<Entity>>& getEntities() { return entities_; }
 
 private:
 	void createEntities();
 	void createWorld();
+	void loadTextures();
 
 	void handleInput();
 	void update(sf::Time delta);
@@ -42,12 +45,14 @@ private:
 	const b2Vec2 Gravity;
 
 	b2World* world_;
+
+	sf::View view_;
 	sf::RenderWindow window_;
 	std::vector<std::unique_ptr<Entity>> entities_;
 
 	tmx::MapLoader mapLoader_;
 
-	sf::View view_;
+	TextureManager textureManager_;
 };
 
 #endif
