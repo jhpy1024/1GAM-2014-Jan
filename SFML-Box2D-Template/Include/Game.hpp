@@ -12,6 +12,9 @@
 #include "tmx/MapLoader.h"
 #include "TextureManager.hpp"
 
+typedef std::vector<std::unique_ptr<Entity>> EntityVector;
+typedef std::vector<std::unique_ptr<Entity>>::iterator EntityIterator;
+
 class Game
 {
 public:
@@ -48,11 +51,14 @@ private:
 
 	sf::View view_;
 	sf::RenderWindow window_;
-	std::vector<std::unique_ptr<Entity>> entities_;
+	EntityVector entities_;
+	std::vector<std::size_t> entitiesToRemove_;
 
 	tmx::MapLoader mapLoader_;
 
 	TextureManager textureManager_;
+
+	bool hasFocus_;
 };
 
 #endif

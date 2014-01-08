@@ -8,6 +8,7 @@ class Player : public Entity
 {
 public:
 	Player(const sf::Vector2f& position, Game* game);
+	~Player();
 
 	void handleInput() override;
 	void update(sf::Time delta) override;

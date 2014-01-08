@@ -9,6 +9,7 @@ enum MessageType
 		GetPositionMsg,
 		GetVelocityMsg,
 		SetVelocityMsg,
+		GotCoinMsg,
 	};
 
 class Message

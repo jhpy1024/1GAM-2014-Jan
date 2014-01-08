@@ -4,6 +4,7 @@
 #include "../Include/Player.hpp"
 #include "../Include/tmx/tmx2box2d.h"
 #include "../Include/ContactListener.hpp"
+#include "../Include/GotCoinMessage.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
@@ -18,6 +19,7 @@ Game::Game()
 	, window_(sf::VideoMode(Width, Height), Title, sf::Style::Close)
 	, world_(new b2World(Gravity))
 	, mapLoader_("Assets/")
+	, hasFocus_(true)
 {
 	createEntities();
 	createWorld();
@@ -75,48 +77,81 @@ void Game::handleInput()
 	sf::Event event;
 	while (window_.pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
+		switch (event.type)
+		{
+		case sf::Event::Closed:
 			window_.close();
+			break;
+		case sf::Event::LostFocus:
+			hasFocus_ = false;
+			break;
+		case sf::Event::GainedFocus:
+			hasFocus_ = true;
+			break;
+		default:
+			break;
+		}
 	}
 
-	for (auto& entity : entities_)
+	if (hasFocus_)
+	{
+		for (auto& entity : entities_)
 		entity->handleInput();
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-	{
-		SetVelocityMessage setVel("player", 0.f, 0.f);
-		SetPositionMessage setPos("player", Width / 4.f, 100.f);
-		sendMessage(setPos);
-		sendMessage(setVel);
-	}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		{
+			SetVelocityMessage setVel("player", 0.f, 0.f);
+			SetPositionMessage setPos("player", Width / 4.f, 100.f);
+			sendMessage(setPos);
+			sendMessage(setVel);
+		}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		view_.zoom(1.2f);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		view_.zoom(0.8f);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			view_.zoom(1.2f);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			view_.zoom(0.8f);
+	}
 }
 
 void Game::update(sf::Time delta)
 {
-	updateView();
+	if (hasFocus_)
+	{
+		updateView();
 
-	for (auto& entity : entities_)
-		entity->update(delta);
+		for (EntityIterator entity = entities_.begin(); entity != entities_.end(); ++entity)
+		{
+			(*(entity))->update(delta);
 
-	world_->Step(TimePerFrame.asSeconds(), 6, 3);
+			if ((*(entity))->shouldRemove())
+				entitiesToRemove_.push_back(std::distance(entities_.begin(), entity));
+		}
+
+		world_->Step(TimePerFrame.asSeconds(), 6, 3);
+
+		for (auto entity : entitiesToRemove_)
+		{
+			entities_.erase(entities_.begin() + entity);
+		}
+
+		entitiesToRemove_.clear();
+	}
 }
 
 void Game::render()
 {
-	window_.clear(sf::Color::Black);
+	if (hasFocus_)
+	{
+		window_.clear(sf::Color::Black);
 
-	window_.setView(view_);
-	window_.draw(mapLoader_);
+		window_.setView(view_);
+		window_.draw(mapLoader_);
 
-	for (auto& entity : entities_)
-		entity->render(window_);
+		for (auto& entity : entities_)
+			entity->render(window_);
 
-	window_.display();
+		window_.display();
+	}
 }
 
 void Game::updateView()

@@ -1,6 +1,7 @@
 #include "../Include/Player.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Game.hpp"
+#include "../Include/GotCoinMessage.hpp"
 #include "../Include/PlayerFootSensor.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
@@ -54,6 +55,11 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	sensorShape_.setSize(sf::Vector2f(width_ / 5.f, height_ / 7.5f));
 	sensorShape_.setOrigin(sensorShape_.getLocalBounds().left + sensorShape_.getLocalBounds().width / 2.f, 
 		sensorShape_.getLocalBounds().top + sensorShape_.getLocalBounds().height / 2.f);
+}
+
+Player::~Player()
+{
+	game_->getWorld()->DestroyBody(body_);
 }
 
 void Player::handleInput()
@@ -130,6 +136,11 @@ void Player::handleMessage(Message& message)
 		{
 			SetVelocityMessage& msg = static_cast<SetVelocityMessage&>(message);
 			body_->SetLinearVelocity(b2Vec2(msg.getVelocity().x, msg.getVelocity().y));
+		}
+		break;
+	case GotCoinMsg:
+		{
+			GotCoinMessage& msg = static_cast<GotCoinMessage&>(message);
 		}
 		break;
 	default:

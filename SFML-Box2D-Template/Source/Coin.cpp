@@ -1,6 +1,7 @@
 #include "../Include/Coin.hpp"
 #include "../Include/Game.hpp"
 #include "../Include/Utils.hpp"
+#include "../Include/GotCoinMessage.hpp"
 
 int Coin::CoinId = 0;
 
@@ -33,6 +34,11 @@ Coin::Coin(const sf::Vector2f& position, Game* game)
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
 }
 
+Coin::~Coin()
+{
+	game_->getWorld()->DestroyBody(body_);
+}
+
 void Coin::handleInput()
 {
 
@@ -50,7 +56,18 @@ void Coin::render(sf::RenderWindow& window)
 
 void Coin::handleMessage(Message& message)
 {
-
+	switch (message.getType())
+	{
+	case GotCoinMsg:
+		{
+			GotCoinMessage& msg = static_cast<GotCoinMessage&>(message);
+			if (msg.getCoinId() == id_)
+				shouldRemove_ = true;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 int Coin::getCoinId() const

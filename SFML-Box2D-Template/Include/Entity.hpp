@@ -10,12 +10,14 @@ class Entity
 {
 public:
 	Entity(const sf::Vector2f& position, Game* game, const std::string& id);
+	virtual ~Entity() { }
 
 	virtual void handleInput() = 0;
 	virtual void update(sf::Time delta) = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
 	virtual void handleMessage(Message& message) = 0;
 
+	bool shouldRemove() const { return shouldRemove_; }
 	b2Body* getBody() { return body_; }
 	std::string getId() const { return id_; }
 	sf::Sprite& getSprite() { return sprite_; }
@@ -31,8 +33,9 @@ public:
 protected:
 	Game* game_;
 	b2Body* body_;
-	sf::Sprite sprite_;
 	std::string id_;
+	sf::Sprite sprite_;
+	bool shouldRemove_;
 };
 
 #endif
