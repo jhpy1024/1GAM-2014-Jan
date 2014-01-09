@@ -7,6 +7,7 @@
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/GetVelocityMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
+#include "../Include/GetAmountCoinsMessage.hpp"
 
 Player::Player(const sf::Vector2f& position, Game* game)
 	: Entity(position, game, "player")
@@ -143,6 +144,12 @@ void Player::handleMessage(Message& message)
 		{
 			GotCoinMessage& msg = static_cast<GotCoinMessage&>(message);
 			coins_ += 10;
+		}
+		break;
+	case GetAmountCoinsMsg:
+		{
+			GetAmountCoinsMessage& msg = static_cast<GetAmountCoinsMessage&>(message);
+			msg.setCoins(coins_);
 		}
 		break;
 	default:

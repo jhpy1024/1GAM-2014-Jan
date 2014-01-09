@@ -39,6 +39,7 @@ private:
 	void render();
 
 	void updateView();
+	void handleMessage(Message& message);
 
 private:
 	const int Width;
@@ -57,6 +58,9 @@ private:
 	tmx::MapLoader mapLoader_;
 
 	TextureManager textureManager_;
+
+	sf::Font coinsFont_;
+	sf::Text coinsText_;
 
 	bool hasFocus_;
 };

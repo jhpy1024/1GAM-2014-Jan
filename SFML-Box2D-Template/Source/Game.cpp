@@ -9,6 +9,7 @@
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
 #include "../Include/GetVelocityMessage.hpp"
+#include "../Include/GetAmountCoinsMessage.hpp"
 
 Game::Game()
 	: Width(1280)
@@ -24,6 +25,13 @@ Game::Game()
 	createEntities();
 	createWorld();
 	loadTextures();
+
+	coinsFont_.loadFromFile("Assets/coinsFont.ttf");
+	coinsText_.setFont(coinsFont_);
+	coinsText_.setColor(sf::Color::Red);
+	coinsText_.setString("Coins: 0");
+	coinsText_.setCharacterSize(30);
+	coinsText_.setPosition(32.f, 30.f);
 	
 	view_.setCenter(Width / 2.f, Height / 2.f);
 	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
@@ -64,7 +72,6 @@ void Game::createWorld()
 		{
 			for (auto& obj : layer.objects)
 			{
-				
 				entities_.push_back(std::unique_ptr<Entity>(new Coin(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this)));
 			} 
 		}
@@ -152,6 +159,9 @@ void Game::render()
 		for (auto& entity : entities_)
 			entity->render(window_);
 
+		window_.setView(window_.getDefaultView());
+		window_.draw(coinsText_);
+
 		window_.display();
 	}
 }
@@ -166,10 +176,29 @@ void Game::updateView()
 
 void Game::sendMessage(Message& message)
 {
+	
 	for (auto& entity : entities_)
 	{
 		if (message.getTargetId() == entity->getId() || message.getTargetId() == "all")
 			entity->handleMessage(message);
+		if (message.getTargetId() == "all" || message.getTargetId() == "game")
+			handleMessage(message);
+	}
+}
+
+void Game::handleMessage(Message& message)
+{
+	switch (message.getType())
+	{
+	case GotCoinMsg:
+		{
+			GetAmountCoinsMessage msg("player");
+			sendMessage(msg);
+			coinsText_.setString("Coins: " + std::to_string(msg.getCoins()));
+		}
+		break;
+	default:
+		break;
 	}
 }
 
