@@ -72,7 +72,8 @@ void Game::createWorld()
 					fixture->SetFriction(0.f);
 				}
 			} 
-		} else if (layer.name == "Coins")
+		}
+		else if (layer.name == "Coins")
 		{
 			for (auto& obj : layer.objects)
 			{
@@ -83,6 +84,15 @@ void Game::createWorld()
 
 				entities_.push_back(std::unique_ptr<Entity>(new Coin(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this, worth)));
 			} 
+		}
+		else if (layer.name == "Player")
+		{
+			for (auto& obj : layer.objects)
+			{
+				SetPositionMessage msg("player", obj.GetAABB().left + obj.GetAABB().width / 2.f,
+					obj.GetAABB().top + obj.GetAABB().height / 2.f);
+				sendMessage(msg);
+			}
 		}
 	}
 
