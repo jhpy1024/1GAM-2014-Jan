@@ -53,10 +53,6 @@ Player::Player(const sf::Vector2f& position, Game* game)
 
 	footBody_ = game->getWorld()->CreateBody(&footDef);
 	footBody_->CreateFixture(&fixtureDef);
-
-	sensorShape_.setSize(sf::Vector2f(width_ / 5.f, height_ / 7.5f));
-	sensorShape_.setOrigin(sensorShape_.getLocalBounds().left + sensorShape_.getLocalBounds().width / 2.f, 
-		sensorShape_.getLocalBounds().top + sensorShape_.getLocalBounds().height / 2.f);
 }
 
 Player::~Player()
@@ -84,7 +80,6 @@ void Player::handleInput()
 void Player::update(sf::Time delta)
 {
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
-	sensorShape_.setPosition(metersToPixels(footBody_->GetPosition().x), metersToPixels(footBody_->GetPosition().y));
 	updateAnimation();
 
 	if (jumpStepsLeft_ > 0)
@@ -108,7 +103,6 @@ void Player::render(sf::RenderWindow& window)
 	}
 
 	window.draw(sprite_);
-	window.draw(sensorShape_);
 }
 
 void Player::handleMessage(Message& message)

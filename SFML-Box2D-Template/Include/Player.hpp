@@ -31,7 +31,6 @@ private:
 	b2Body* footBody_;
 	b2Fixture* footFixture_;
 	PlayerFootSensor footSensor_;	
-	sf::RectangleShape sensorShape_;
 
 	enum class Direction { Left, Right };
 	Direction direction_;
