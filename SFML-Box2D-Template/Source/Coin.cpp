@@ -26,11 +26,11 @@ Coin::Coin(const sf::Vector2f& position, Game* game, int worth)
 	fixtureDef.shape = &shape;
 	fixtureDef.density = 1.f;
 	fixtureDef.isSensor = true;
-	fixtureDef.userData = this;
 
 	body_->CreateFixture(&fixtureDef);
 	body_->SetGravityScale(0.f);
 	body_->SetFixedRotation(true);
+	body_->SetUserData(this);
 
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
 }

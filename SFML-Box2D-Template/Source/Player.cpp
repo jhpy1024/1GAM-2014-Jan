@@ -49,10 +49,10 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	b2FixtureDef fixtureDef;
 	fixtureDef.isSensor = true;
 	fixtureDef.shape = &shape;
-	fixtureDef.userData = &footSensor_;
 
 	footBody_ = game->getWorld()->CreateBody(&footDef);
 	footBody_->CreateFixture(&fixtureDef);
+	footBody_->SetUserData(&footSensor_);
 }
 
 Player::~Player()
@@ -73,7 +73,7 @@ void Player::handleInput()
 		direction_ = Direction::Right;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && footSensor_.getNumContacts() >= 2)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && footSensor_.getNumContacts() >= 1)
 		jumpStepsLeft_ = 6;
 }
 

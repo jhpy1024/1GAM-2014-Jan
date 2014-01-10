@@ -2,6 +2,7 @@
 #include "../Include/Coin.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
+#include "../Include/Ground.hpp"
 #include "../Include/tmx/tmx2box2d.h"
 #include "../Include/ContactListener.hpp"
 #include "../Include/GotCoinMessage.hpp"
@@ -64,6 +65,7 @@ void Game::createWorld()
 				auto body = tmx::BodyCreator::Add(obj, *world_);
 				body->SetTransform(b2Vec2(body->GetPosition().x, -body->GetPosition().y), body->GetAngle());
 				body->SetFixedRotation(true);
+				body->SetUserData(new Ground(this));
 				
 				for (auto fixture = body->GetFixtureList(); fixture ; fixture = fixture->GetNext())
 				{
