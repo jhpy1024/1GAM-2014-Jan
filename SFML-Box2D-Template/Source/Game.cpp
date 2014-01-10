@@ -149,9 +149,9 @@ void Game::update(sf::Time delta)
 
 		for (auto entity : entitiesToRemove_)
 		{
-			entities_.erase(entities_.begin() + entity);
+			if (entity != entities_.size())
+				entities_.erase(entities_.begin() + entity);
 		}
-
 		entitiesToRemove_.clear();
 	}
 }
