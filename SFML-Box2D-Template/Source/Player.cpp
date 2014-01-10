@@ -143,7 +143,7 @@ void Player::handleMessage(Message& message)
 	case GotCoinMsg:
 		{
 			GotCoinMessage& msg = static_cast<GotCoinMessage&>(message);
-			coins_ += 10;
+			coins_ += msg.getCoin().getWorth();
 		}
 		break;
 	case GetAmountCoinsMsg:

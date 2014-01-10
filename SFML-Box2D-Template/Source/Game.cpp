@@ -40,7 +40,9 @@ Game::Game()
 void Game::loadTextures()
 {
 	textureManager_.addTexture("player", "Assets/player.png");
-	textureManager_.addTexture("coin", "Assets/coin.png");
+	textureManager_.addTexture("coin1", "Assets/coin1.png");
+	textureManager_.addTexture("coin5", "Assets/coin5.png");
+	textureManager_.addTexture("coin100", "Assets/coin100.png");
 }
 
 void Game::createEntities()
@@ -72,7 +74,12 @@ void Game::createWorld()
 		{
 			for (auto& obj : layer.objects)
 			{
-				entities_.push_back(std::unique_ptr<Entity>(new Coin(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this)));
+				int worth = 1;
+
+				if (!obj.GetPropertyString("worth").empty())
+					worth = std::stoi(obj.GetPropertyString("worth"));
+
+				entities_.push_back(std::unique_ptr<Entity>(new Coin(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this, worth)));
 			} 
 		}
 	}

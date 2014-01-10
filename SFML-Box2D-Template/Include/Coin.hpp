@@ -7,7 +7,7 @@ class Game;
 class Coin : public Entity
 {
 public:
-	Coin(const sf::Vector2f& position, Game* game);
+	Coin(const sf::Vector2f& position, Game* game, int worth);
 	~Coin();
 
 	void handleInput() override;
@@ -16,8 +16,10 @@ public:
 	void handleMessage(Message& message) override;
 
 	int getCoinId() const;
+	int getWorth() const { return worth_; }
 
 private:
+	int worth_;
 	static int CoinId;
 };
 
