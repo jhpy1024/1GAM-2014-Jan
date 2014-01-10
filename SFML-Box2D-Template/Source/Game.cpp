@@ -90,8 +90,10 @@ void Game::createWorld()
 			for (auto& obj : layer.objects)
 			{
 				SetPositionMessage msg("player", obj.GetAABB().left + obj.GetAABB().width / 2.f,
-					obj.GetAABB().top + obj.GetAABB().height / 2.f);
+					obj.GetAABB().top - obj.GetAABB().height / 2.f);
 				sendMessage(msg);
+				playerStartPos_.x = msg.getPosition().x;
+				playerStartPos_.y = msg.getPosition().y;
 			}
 		}
 	}
@@ -127,11 +129,7 @@ void Game::handleInput()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 		{
-			SetVelocityMessage setVel("player", 0.f, 0.f);
-			SetPositionMessage setPos("player", Width / 4.f, 100.f);
-			sendMessage(setPos);
-			sendMessage(setVel);
-			view_.setCenter(Width / 2.f, Height / 2.f);
+			reset();
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -139,6 +137,16 @@ void Game::handleInput()
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			view_.zoom(0.8f);
 	}
+}
+
+void Game::reset()
+{
+
+	SetVelocityMessage setVel("player", 0.f, 0.f);
+	SetPositionMessage setPos("player", playerStartPos_);
+	sendMessage(setPos);
+	sendMessage(setVel);
+	view_.setCenter(Width / 2.f, Height / 2.f);
 }
 
 void Game::update(sf::Time delta)

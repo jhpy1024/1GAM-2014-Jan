@@ -41,6 +41,8 @@ private:
 	void updateView();
 	void handleMessage(Message& message);
 
+	void reset();
+
 private:
 	const int Width;
 	const int Height;
@@ -61,6 +63,8 @@ private:
 
 	sf::Font coinsFont_;
 	sf::Text coinsText_;
+
+	sf::Vector2f playerStartPos_;
 
 	bool hasFocus_;
 };
