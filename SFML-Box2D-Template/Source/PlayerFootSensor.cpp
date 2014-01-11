@@ -10,11 +10,11 @@ PlayerFootSensor::PlayerFootSensor(Game* game)
 // -- Functions empty by default --
 void PlayerFootSensor::handleInput()
 { }
-void PlayerFootSensor::update(sf::Time delta)
+void PlayerFootSensor::update(sf::Time)
 { }
-void PlayerFootSensor::render(sf::RenderWindow& window)
+void PlayerFootSensor::render(sf::RenderWindow&)
 { }
-void PlayerFootSensor::handleMessage(Message& message)
+void PlayerFootSensor::handleMessage(Message&)
 { }
 
 void PlayerFootSensor::setNumContacts(int numContacts)

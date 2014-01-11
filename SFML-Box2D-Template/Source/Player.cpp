@@ -77,7 +77,7 @@ void Player::handleInput()
 		jumpStepsLeft_ = 6;
 }
 
-void Player::update(sf::Time delta)
+void Player::update(sf::Time)
 {
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
 	updateAnimation();

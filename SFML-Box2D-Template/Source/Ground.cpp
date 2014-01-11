@@ -12,17 +12,17 @@ void Ground::handleInput()
 
 }
 
-void Ground::update(sf::Time delta)
+void Ground::update(sf::Time)
 {
 
 }
 
-void Ground::render(sf::RenderWindow& window)
+void Ground::render(sf::RenderWindow&)
 {
 
 }
 
-void Ground::handleMessage(Message& message)
+void Ground::handleMessage(Message&)
 {
 
 }

@@ -59,6 +59,7 @@ ContactListener::ContactListener(Game* game)
 	{
 		if (bodyUserDataA && bodyUserDataB)
 		{
+
 			auto entityA = static_cast<Entity*>(bodyUserDataA);
 			auto entityB = static_cast<Entity*>(bodyUserDataB);
 

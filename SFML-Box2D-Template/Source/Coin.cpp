@@ -18,7 +18,8 @@ Coin::Coin(const sf::Vector2f& position, Game* game, int worth)
 	bodyDef.position.Set(pixelsToMeters(position.x), pixelsToMeters(position.y));
 
 	b2PolygonShape shape;
-	shape.SetAsBox(pixelsToMeters(sprite_.getTexture()->getSize().x) / 2.f, pixelsToMeters(sprite_.getTexture()->getSize().y) / 2.f);
+	shape.SetAsBox(pixelsToMeters(static_cast<float>(sprite_.getTexture()->getSize().x)) / 2.f,
+		pixelsToMeters(static_cast<float>(sprite_.getTexture()->getSize().y)) / 2.f);
 
 	body_ = game->getWorld()->CreateBody(&bodyDef);
 
