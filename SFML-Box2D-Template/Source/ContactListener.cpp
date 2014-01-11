@@ -9,11 +9,8 @@ ContactListener::ContactListener(Game* game)
 {
 	beginFunctions_.push_back
 	(
-	[](b2Fixture* fixtureA, b2Fixture* fixtureB)
+	[](void* bodyUserDataA, void* bodyUserDataB)
 	{
-		auto bodyUserDataA = fixtureA->GetBody()->GetUserData();
-		auto bodyUserDataB = fixtureB->GetBody()->GetUserData();
-
 		if (bodyUserDataA && bodyUserDataB)
 		{
 			auto entityA = static_cast<Entity*>(bodyUserDataA);
@@ -35,11 +32,8 @@ ContactListener::ContactListener(Game* game)
 	
 	beginFunctions_.push_back
 	(
-	[game](b2Fixture* fixtureA, b2Fixture* fixtureB)
+	[game](void* bodyUserDataA, void* bodyUserDataB)
 	{
-		auto bodyUserDataA = fixtureA->GetBody()->GetUserData();
-		auto bodyUserDataB = fixtureB->GetBody()->GetUserData();
-
 		if (bodyUserDataA && bodyUserDataB)
 		{
 			auto entityA = static_cast<Entity*>(bodyUserDataA);
@@ -61,11 +55,8 @@ ContactListener::ContactListener(Game* game)
 
 	endFunctions_.push_back
 	(
-	[](b2Fixture* fixtureA, b2Fixture* fixtureB)
+	[](void* bodyUserDataA, void* bodyUserDataB)
 	{
-		auto bodyUserDataA = fixtureA->GetBody()->GetUserData();
-		auto bodyUserDataB = fixtureB->GetBody()->GetUserData();
-
 		if (bodyUserDataA && bodyUserDataB)
 		{
 			auto entityA = static_cast<Entity*>(bodyUserDataA);
@@ -92,7 +83,7 @@ void ContactListener::BeginContact(b2Contact* contact)
 	b2Fixture* fixtureB = contact->GetFixtureB();
 
 	for (auto func : beginFunctions_)
-		func(fixtureA, fixtureB);
+		func(fixtureA->GetBody()->GetUserData(), fixtureB->GetBody()->GetUserData());
 }
 
 void ContactListener::EndContact(b2Contact* contact)
@@ -101,5 +92,5 @@ void ContactListener::EndContact(b2Contact* contact)
 	b2Fixture* fixtureB = contact->GetFixtureB();
 
 	for (auto func : endFunctions_)
-		func(fixtureA, fixtureB);
+		func(fixtureA->GetBody()->GetUserData(), fixtureB->GetBody()->GetUserData());
 }

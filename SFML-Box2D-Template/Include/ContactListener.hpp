@@ -16,8 +16,8 @@ public:
 
 private:
 	Game* game_;
-	std::vector<std::function<void(b2Fixture*, b2Fixture*)>> beginFunctions_;
-	std::vector<std::function<void(b2Fixture*, b2Fixture*)>> endFunctions_;
+	std::vector<std::function<void(void*, void*)>> beginFunctions_;
+	std::vector<std::function<void(void*, void*)>> endFunctions_;
 };
 
 #endif
