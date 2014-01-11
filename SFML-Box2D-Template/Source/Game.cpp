@@ -1,5 +1,6 @@
 #include "../Include/Game.hpp"
 #include "../Include/Coin.hpp"
+#include "../Include/Spike.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
 #include "../Include/Ground.hpp"
@@ -44,6 +45,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("coin1", "Assets/coin1.png");
 	textureManager_.addTexture("coin5", "Assets/coin5.png");
 	textureManager_.addTexture("coin100", "Assets/coin100.png");
+	textureManager_.addTexture("spike", "Assets/spike.png");
 }
 
 void Game::createEntities()
@@ -83,6 +85,13 @@ void Game::createWorld()
 					worth = std::stoi(obj.GetPropertyString("worth"));
 
 				entities_.push_back(std::unique_ptr<Entity>(new Coin(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this, worth)));
+			} 
+		}
+		else if (layer.name == "Spikes")
+		{
+			for (auto& obj : layer.objects)
+			{
+				entities_.push_back(std::unique_ptr<Entity>(new Spike(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this)));
 			} 
 		}
 		else if (layer.name == "Player")
