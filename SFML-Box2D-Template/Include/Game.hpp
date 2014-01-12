@@ -67,6 +67,7 @@ private:
 	sf::Vector2f playerStartPos_;
 
 	bool hasFocus_;
+	bool shouldReset_;
 };
 
 #endif

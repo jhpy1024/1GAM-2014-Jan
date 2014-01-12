@@ -1,12 +1,14 @@
 #include "../Include/Game.hpp"
 #include "../Include/Entity.hpp"
 #include "../Include/GotCoinMessage.hpp"
+#include "../Include/HitSpikeMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/PlayerFootSensor.hpp"
 
 ContactListener::ContactListener(Game* game)
 	: game_(game)
 {
+	// playerFootSensor vs ground
 	beginFunctions_.push_back
 	(
 	[](void* bodyUserDataA, void* bodyUserDataB)
@@ -30,6 +32,7 @@ ContactListener::ContactListener(Game* game)
 	}
 	);
 	
+	// player vs coin
 	beginFunctions_.push_back
 	(
 	[game](void* bodyUserDataA, void* bodyUserDataB)
@@ -53,6 +56,34 @@ ContactListener::ContactListener(Game* game)
 	}
 	);
 
+	// player vs spike
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			bool hitSpike = false;
+
+			if (entityA->getId() == "player" && entityB->getId() == "spike")
+			{
+				hitSpike = true;
+			}
+			else if (entityA->getId() == "spike" && entityB->getId() == "player")
+			{
+				hitSpike = true;
+			}
+
+			if (hitSpike)
+				game->sendMessage(HitSpikeMessage("all"));
+		}
+	}
+	);
+
+	// [end] playerFootSensor vs ground
 	endFunctions_.push_back
 	(
 	[](void* bodyUserDataA, void* bodyUserDataB)

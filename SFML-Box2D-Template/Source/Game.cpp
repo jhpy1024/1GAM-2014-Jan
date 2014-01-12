@@ -23,6 +23,7 @@ Game::Game()
 	, world_(new b2World(Gravity))
 	, mapLoader_("Assets/")
 	, hasFocus_(true)
+	, shouldReset_(false)
 {
 	createEntities();
 	createWorld();
@@ -138,7 +139,7 @@ void Game::handleInput()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 		{
-			reset();
+			shouldReset_ = true;
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -156,6 +157,7 @@ void Game::reset()
 	sendMessage(setPos);
 	sendMessage(setVel);
 	view_.setCenter(Width / 2.f, Height / 2.f);
+	shouldReset_ = false;
 }
 
 void Game::update(sf::Time delta)
@@ -180,6 +182,9 @@ void Game::update(sf::Time delta)
 				entities_.erase(entities_.begin() + entity);
 		}
 		entitiesToRemove_.clear();
+
+		if (shouldReset_)
+			reset();
 	}
 }
 
@@ -231,6 +236,11 @@ void Game::handleMessage(Message& message)
 			GetAmountCoinsMessage msg("player");
 			sendMessage(msg);
 			coinsText_.setString("Coins: " + std::to_string(msg.getCoins()));
+		}
+		break;
+	case HitSpikeMsg:
+		{
+			shouldReset_ = true;
 		}
 		break;
 	default:

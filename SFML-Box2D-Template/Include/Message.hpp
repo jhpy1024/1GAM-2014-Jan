@@ -11,6 +11,7 @@ enum MessageType
 		SetVelocityMsg,
 		GotCoinMsg,
 		GetAmountCoinsMsg,
+		HitSpikeMsg,
 	};
 
 class Message
