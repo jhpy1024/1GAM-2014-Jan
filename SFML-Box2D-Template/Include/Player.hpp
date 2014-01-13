@@ -37,6 +37,8 @@ private:
 
 	int coins_;
 	int health_;
+	sf::Clock hurtClock_;
+	const sf::Time HurtDelay;
 };
 
 #endif

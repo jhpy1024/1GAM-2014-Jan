@@ -22,6 +22,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, direction_(Direction::Right)
 	, coins_(0)
 	, health_(100)
+	, HurtDelay(sf::seconds(0.2f))
 {
 	sprite_.setTexture(game->getTextureManager().getTexture("player"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
@@ -150,7 +151,11 @@ void Player::handleMessage(Message& message)
 		break;
 	case HitSpikeMsg:
 		{
-			health_ -= 25;
+			if (hurtClock_.getElapsedTime() >= HurtDelay)
+			{
+				health_ -= 25;
+				hurtClock_.restart();
+			}
 		}
 		break;
 	case GetHealthMsg:
