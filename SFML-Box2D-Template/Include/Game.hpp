@@ -63,6 +63,7 @@ private:
 
 	sf::Font coinsFont_;
 	sf::Text coinsText_;
+	sf::Sprite healthBar_;
 
 	sf::Vector2f playerStartPos_;
 

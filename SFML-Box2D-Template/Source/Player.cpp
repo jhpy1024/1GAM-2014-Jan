@@ -2,6 +2,7 @@
 #include "../Include/Utils.hpp"
 #include "../Include/Game.hpp"
 #include "../Include/GotCoinMessage.hpp"
+#include "../Include/GetHealthMessage.hpp"
 #include "../Include/PlayerFootSensor.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
@@ -20,6 +21,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, footSensor_(game)
 	, direction_(Direction::Right)
 	, coins_(0)
+	, health_(100)
 {
 	sprite_.setTexture(game->getTextureManager().getTexture("player"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
@@ -144,6 +146,17 @@ void Player::handleMessage(Message& message)
 		{
 			GetAmountCoinsMessage& msg = static_cast<GetAmountCoinsMessage&>(message);
 			msg.setCoins(coins_);
+		}
+		break;
+	case HitSpikeMsg:
+		{
+			health_ -= 25;
+		}
+		break;
+	case GetHealthMsg:
+		{
+			GetHealthMessage& msg = static_cast<GetHealthMessage&>(message);
+			msg.setHealth(health_);
 		}
 		break;
 	default:

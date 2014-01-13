@@ -12,6 +12,7 @@ enum MessageType
 		GotCoinMsg,
 		GetAmountCoinsMsg,
 		HitSpikeMsg,
+		GetHealthMsg,
 	};
 
 class Message

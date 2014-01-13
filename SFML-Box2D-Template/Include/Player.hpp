@@ -36,6 +36,7 @@ private:
 	Direction direction_;
 
 	int coins_;
+	int health_;
 };
 
 #endif

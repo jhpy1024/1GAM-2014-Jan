@@ -5,8 +5,9 @@
 #include "../Include/Player.hpp"
 #include "../Include/Ground.hpp"
 #include "../Include/tmx/tmx2box2d.h"
-#include "../Include/ContactListener.hpp"
 #include "../Include/GotCoinMessage.hpp"
+#include "../Include/ContactListener.hpp"
+#include "../Include/GetHealthMessage.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
@@ -35,6 +36,11 @@ Game::Game()
 	coinsText_.setString("Coins: 0");
 	coinsText_.setCharacterSize(30);
 	coinsText_.setPosition(32.f, 30.f);
+
+	healthBar_.setTexture(textureManager_.getTexture("healthBar"));
+	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
+		healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
+	healthBar_.setPosition(Width / 2.f, 50.f);
 	
 	view_.setCenter(Width / 2.f, Height / 2.f);
 	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
@@ -47,6 +53,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("coin5", "Assets/coin5.png");
 	textureManager_.addTexture("coin100", "Assets/coin100.png");
 	textureManager_.addTexture("spike", "Assets/spike.png");
+	textureManager_.addTexture("healthBar", "Assets/healthbar.png");
 }
 
 void Game::createEntities()
@@ -202,6 +209,7 @@ void Game::render()
 
 		window_.setView(window_.getDefaultView());
 		window_.draw(coinsText_);
+		window_.draw(healthBar_);
 
 		window_.display();
 	}
@@ -241,6 +249,10 @@ void Game::handleMessage(Message& message)
 	case HitSpikeMsg:
 		{
 			shouldReset_ = true;
+			GetHealthMessage msg("player");
+			sendMessage(msg);
+			if (msg.getHealth() >= 0) // TODO: Remove this when added checks for if the player is dead.
+				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * 2.f, healthBar_.getTextureRect().height));
 		}
 		break;
 	default:
