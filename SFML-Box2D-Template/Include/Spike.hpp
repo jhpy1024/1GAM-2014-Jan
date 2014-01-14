@@ -7,7 +7,7 @@ class Game;
 class Spike : public Entity 
 {
 public:
-	Spike(const sf::Vector2f& position, Game* game);
+	Spike(const sf::Vector2f& position, Game* game, const std::string& direction = "");
 
 	void handleInput() override;
 	void update(sf::Time delta) override;

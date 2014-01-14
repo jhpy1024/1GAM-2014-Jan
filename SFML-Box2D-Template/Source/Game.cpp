@@ -63,6 +63,9 @@ void Game::loadTextures()
 	textureManager_.addTexture("spike", "Assets/spike.png");
 	textureManager_.addTexture("healthBar", "Assets/healthbar.png");
 	textureManager_.addTexture("jumpPowerup", "Assets/jumpPowerup.png");
+	textureManager_.addTexture("spike left", "Assets/spike left.png");
+	textureManager_.addTexture("spike right", "Assets/spike right.png");
+	textureManager_.addTexture("spike down", "Assets/spike down.png");
 }
 
 void Game::createEntities()
@@ -108,7 +111,12 @@ void Game::createWorld()
 		{
 			for (auto& obj : layer.objects)
 			{
-				entities_.push_back(std::unique_ptr<Entity>(new Spike(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this)));
+				std::string direction = "";
+
+				if (!obj.GetPropertyString("direction").empty())
+					direction = obj.GetPropertyString("direction");
+
+				entities_.push_back(std::unique_ptr<Entity>(new Spike(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this, direction)));
 			} 
 		}
 		else if (layer.name == "Player")

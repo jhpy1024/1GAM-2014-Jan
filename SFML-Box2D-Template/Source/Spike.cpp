@@ -2,10 +2,13 @@
 #include "../Include/Utils.hpp"
 #include "../Include/Spike.hpp"
 
-Spike::Spike(const sf::Vector2f& position, Game* game)
+Spike::Spike(const sf::Vector2f& position, Game* game, const std::string& direction)
 	: Entity(position, game, "spike")
 {
-	sprite_.setTexture(game->getTextureManager().getTexture("spike"));
+	if (direction.empty())
+		sprite_.setTexture(game->getTextureManager().getTexture("spike"));
+	else
+		sprite_.setTexture(game->getTextureManager().getTexture("spike " + direction));
 	sprite_.setTextureRect(sf::IntRect(0, 0, 32, 32));
 
 	b2BodyDef bodyDef;
