@@ -17,7 +17,12 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, height_(94)
 	, currFrame_(0)
 	, numFrames_(11)
+	, DefaultJumpSteps(6)
+	, SuperJumpSteps(15)
 	, jumpStepsLeft_(0)
+	, numJumpSteps_(DefaultJumpSteps)
+	, jumpPowerupTime_(sf::seconds(5.f))
+	, superJump_(false)
 	, footSensor_(game)
 	, direction_(Direction::Right)
 	, coins_(0)
@@ -72,13 +77,26 @@ void Player::handleInput()
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && footSensor_.getNumContacts() >= 1)
-		jumpStepsLeft_ = 6;
+		jumpStepsLeft_ = numJumpSteps_;
 }
 
 void Player::update(sf::Time)
 {
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
 	updateAnimation();
+
+	if (superJump_)
+	{
+		if (superJumpClock_.getElapsedTime() - timeGotJumpPowerup_ >= jumpPowerupTime_)
+		{
+			superJump_ = false;
+			numJumpSteps_ = DefaultJumpSteps;
+		}
+		else
+		{
+			numJumpSteps_ = SuperJumpSteps;
+		}
+	}
 
 	if (jumpStepsLeft_ > 0)
 	{
@@ -157,6 +175,12 @@ void Player::handleMessage(Message& message)
 		{
 			GetHealthMessage& msg = static_cast<GetHealthMessage&>(message);
 			msg.setHealth(health_);
+		}
+		break;
+	case GotJumpPowerupMsg:
+		{
+			timeGotJumpPowerup_ = superJumpClock_.getElapsedTime();
+			superJump_ = true;
 		}
 		break;
 	default:

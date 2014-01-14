@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="80" height="22" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="techblocks2_1" tilewidth="32" tileheight="32">
-  <image source="techblocks2_1.png" width="256" height="224"/>
+  <image source="../../Release/Assets/techblocks2_1.png" width="256" height="224"/>
  </tileset>
  <tileset firstgid="57" name="asd" tilewidth="32" tileheight="32">
-  <image source="asd.png" width="128" height="128"/>
+  <image source="../../Release/Assets/asd.png" width="128" height="128"/>
  </tileset>
  <layer name="Tile Layer 1" width="80" height="22">
   <data>
@@ -1922,5 +1922,8 @@
   <object x="704" y="640" width="32" height="32"/>
   <object x="992" y="640" width="32" height="32"/>
   <object x="1024" y="640" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup name="JumpPowerups" width="80" height="22">
+  <object x="512" y="352" width="32" height="32"/>
  </objectgroup>
 </map>

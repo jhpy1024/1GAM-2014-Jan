@@ -4,6 +4,7 @@
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
 #include "../Include/Ground.hpp"
+#include "../Include/JumpPowerup.hpp"
 #include "../Include/tmx/tmx2box2d.h"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/ContactListener.hpp"
@@ -13,6 +14,7 @@
 #include "../Include/SetVelocityMessage.hpp"
 #include "../Include/GetVelocityMessage.hpp"
 #include "../Include/GetAmountCoinsMessage.hpp"
+#include "../Include/GotJumpPowerupMessage.hpp"
 
 Game::Game()
 	: Width(1280)
@@ -60,6 +62,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("coin100", "Assets/coin100.png");
 	textureManager_.addTexture("spike", "Assets/spike.png");
 	textureManager_.addTexture("healthBar", "Assets/healthbar.png");
+	textureManager_.addTexture("jumpPowerup", "Assets/jumpPowerup.png");
 }
 
 void Game::createEntities()
@@ -118,6 +121,13 @@ void Game::createWorld()
 				playerStartPos_.x = msg.getPosition().x;
 				playerStartPos_.y = msg.getPosition().y;
 			}
+		}
+		else if (layer.name == "JumpPowerups")
+		{
+			for (auto& obj : layer.objects)
+			{
+				entities_.push_back(std::unique_ptr<Entity>(new JumpPowerup(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this)));
+			} 
 		}
 	}
 

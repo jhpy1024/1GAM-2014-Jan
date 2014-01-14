@@ -25,7 +25,14 @@ private:
 	int numFrames_;
 	sf::Clock clock_;
 
+	const int DefaultJumpSteps;
+	const int SuperJumpSteps;
 	int jumpStepsLeft_;
+	int numJumpSteps_;
+	sf::Clock superJumpClock_;
+	sf::Time timeGotJumpPowerup_;
+	sf::Time jumpPowerupTime_;
+	bool superJump_;
 
 	b2Body* footBody_;
 	b2Fixture* footFixture_;

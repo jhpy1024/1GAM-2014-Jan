@@ -4,6 +4,7 @@
 #include "../Include/HitSpikeMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/PlayerFootSensor.hpp"
+#include "../Include/GotJumpPowerupMessage.hpp"
 
 ContactListener::ContactListener(Game* game)
 	: game_(game)
@@ -51,6 +52,32 @@ ContactListener::ContactListener(Game* game)
 			{
 				auto coin = static_cast<Coin*>(entityB);
 				game->sendMessage(GotCoinMessage("all", entityB->getId(), *coin));
+			}
+		}
+	}
+	);
+
+	// player vs jump powerup 
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId().find("jumpPowerup") != entityA->getId().npos && entityB->getId() == "player")
+			{
+				auto powerup = static_cast<JumpPowerup*>(entityA);
+				GotJumpPowerupMessage msg("all", *powerup);
+				game->sendMessage(msg);
+			}
+			else if (entityA->getId() == "player" && entityB->getId().find("jumpPowerup") != entityB->getId().npos)
+			{
+				auto powerup = static_cast<JumpPowerup*>(entityB);
+				GotJumpPowerupMessage msg("all", *powerup);
+				game->sendMessage(msg);
 			}
 		}
 	}
