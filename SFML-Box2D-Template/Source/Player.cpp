@@ -58,11 +58,6 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	footBody_->SetUserData(&footSensor_);
 }
 
-Player::~Player()
-{
-	game_->getWorld()->DestroyBody(body_);
-}
-
 void Player::handleInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))

@@ -10,7 +10,7 @@ class Entity
 {
 public:
 	Entity(const sf::Vector2f& position, Game* game, const std::string& id);
-	virtual ~Entity() { }
+	virtual ~Entity();
 
 	virtual void handleInput() = 0;
 	virtual void update(sf::Time delta) = 0;

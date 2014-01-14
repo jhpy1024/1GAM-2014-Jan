@@ -12,13 +12,11 @@
 #include "tmx/MapLoader.h"
 #include "TextureManager.hpp"
 
-typedef std::vector<std::unique_ptr<Entity>> EntityVector;
-typedef std::vector<std::unique_ptr<Entity>>::iterator EntityIterator;
-
 class Game
 {
 public:
 	Game();
+	~Game();
 
 	void run();
 	void sendMessage(Message& message);
@@ -54,8 +52,8 @@ private:
 
 	sf::View view_;
 	sf::RenderWindow window_;
-	EntityVector entities_;
-	std::vector<std::size_t> entitiesToRemove_;
+
+	std::vector<std::unique_ptr<Entity>> entities_;
 
 	tmx::MapLoader mapLoader_;
 
@@ -69,6 +67,7 @@ private:
 
 	bool hasFocus_;
 	bool shouldReset_;
+	sf::Clock clock_;
 };
 
 #endif

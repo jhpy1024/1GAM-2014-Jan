@@ -36,11 +36,6 @@ Coin::Coin(const sf::Vector2f& position, Game* game, int worth)
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
 }
 
-Coin::~Coin()
-{
-	game_->getWorld()->DestroyBody(body_);
-}
-
 void Coin::handleInput()
 {
 

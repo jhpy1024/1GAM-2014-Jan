@@ -8,7 +8,6 @@ class Spike : public Entity
 {
 public:
 	Spike(const sf::Vector2f& position, Game* game);
-	~Spike();
 
 	void handleInput() override;
 	void update(sf::Time delta) override;

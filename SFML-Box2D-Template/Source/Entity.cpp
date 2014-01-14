@@ -8,3 +8,9 @@ Entity::Entity(const sf::Vector2f& position, Game* game, const std::string& id)
 {
 	sprite_.setPosition(position);
 }
+
+Entity::~Entity()
+{
+	if (game_->getWorld() != nullptr)
+		game_->getWorld()->DestroyBody(body_);
+}

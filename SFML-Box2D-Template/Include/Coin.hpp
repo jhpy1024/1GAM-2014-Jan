@@ -8,7 +8,6 @@ class Coin : public Entity
 {
 public:
 	Coin(const sf::Vector2f& position, Game* game, int worth);
-	~Coin();
 
 	void handleInput() override;
 	void update(sf::Time delta) override;

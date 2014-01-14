@@ -46,6 +46,12 @@ Game::Game()
 	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
 }
 
+Game::~Game()
+{
+	delete world_;
+	world_ = nullptr;
+}
+
 void Game::loadTextures()
 {
 	textureManager_.addTexture("player", "Assets/player.png");
@@ -172,23 +178,13 @@ void Game::update(sf::Time delta)
 	if (hasFocus_)
 	{
 		updateView();
-
-		for (EntityIterator entity = entities_.begin(); entity != entities_.end(); ++entity)
-		{
-			(*(entity))->update(delta);
-
-			if ((*(entity))->shouldRemove())
-				entitiesToRemove_.push_back(std::distance(entities_.begin(), entity));
-		}
+		
+		for (auto& entity : entities_)
+			entity->update(delta);
 
 		world_->Step(TimePerFrame.asSeconds(), 6, 3);
 
-		for (auto entity : entitiesToRemove_)
-		{
-			if (entity != entities_.size())
-				entities_.erase(entities_.begin() + entity);
-		}
-		entitiesToRemove_.clear();
+		entities_.erase(std::remove_if(entities_.begin(), entities_.end(), [](std::unique_ptr<Entity>& ent) { return ent->shouldRemove(); }), std::end(entities_));
 
 		if (shouldReset_)
 			reset();

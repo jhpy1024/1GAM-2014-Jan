@@ -30,11 +30,6 @@ Spike::Spike(const sf::Vector2f& position, Game* game)
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
 }
 
-Spike::~Spike()
-{
-	game_->getWorld()->DestroyBody(body_);
-}
-
 void Spike::handleInput() 
 {
 
