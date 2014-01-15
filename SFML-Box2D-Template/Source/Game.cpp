@@ -218,7 +218,7 @@ void Game::render()
 {
 	if (hasFocus_)
 	{
-		window_.clear(sf::Color::Black);
+		window_.clear(sf::Color(1, 255, 255));
 
 		window_.draw(bgSprite_);
 		window_.setView(view_);
