@@ -1,10 +1,12 @@
 #include "../Include/Player.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Game.hpp"
+#include "../Include/ResumedMessage.hpp"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/GetHealthMessage.hpp"
 #include "../Include/PlayerFootSensor.hpp"
 #include "../Include/GetPositionMessage.hpp"
+#include "../Include/PauseEntityMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/GetVelocityMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
@@ -82,10 +84,30 @@ void Player::handleInput()
 
 void Player::update(sf::Time)
 {
+	if (paused_)
+	{
+		// Is pause time over?
+		if (pauseClock_.getElapsedTime() - pauseStartedTime_ >= timeToPause_)
+		{
+			paused_ = false;
+			body_->SetLinearVelocity(velBeforePause_);
+			game_->sendMessage(ResumedMessage("game", ResumedFrom::Spikes));
+		}
+		else
+		{
+			// Still paused so don't update
+			// Set the velocity to zero to make sure we don't move while paused.
+			body_->SetLinearVelocity(b2Vec2_zero);
+			return;
+		}
+	}
+
+	// Set the position of the foot sensor to the correct position.
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
 
 	if (superJump_)
 	{
+		// Is super jump time over?
 		if (superJumpClock_.getElapsedTime() - timeGotJumpPowerup_ >= jumpPowerupTime_)
 		{
 			superJump_ = false;
@@ -97,6 +119,7 @@ void Player::update(sf::Time)
 		}
 	}
 
+	// If there are still jump steps left, apply the jump force.
 	if (jumpStepsLeft_ > 0)
 	{
 		body_->ApplyForceToCenter(b2Vec2(0.f, -Speed * 5), true);
@@ -123,6 +146,7 @@ void Player::handleMessage(Message& message)
 		break;
 	case SetPositionMsg:
 		{
+			if (paused_) break;
 			SetPositionMessage& msg = static_cast<SetPositionMessage&>(message);
 			sprite_.setPosition(msg.getPosition());
 			body_->SetTransform(b2Vec2(pixelsToMeters(msg.getPosition().x), pixelsToMeters(msg.getPosition().y)), body_->GetAngle());
@@ -171,6 +195,16 @@ void Player::handleMessage(Message& message)
 		{
 			timeGotJumpPowerup_ = superJumpClock_.getElapsedTime();
 			superJump_ = true;
+		}
+		break;
+	case PauseEntityMsg:
+		{
+			PauseEntityMessage& msg = static_cast<PauseEntityMessage&>(message);
+			timeToPause_ = msg.getPauseTime();
+			pauseStartedTime_ = pauseClock_.getElapsedTime();
+			paused_ = true;
+
+			velBeforePause_ = body_->GetLinearVelocity();
 		}
 		break;
 	default:

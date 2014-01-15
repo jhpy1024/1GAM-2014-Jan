@@ -32,10 +32,14 @@ public:
 
 protected:
 	Game* game_;
+	bool paused_;
 	b2Body* body_;
 	std::string id_;
 	sf::Sprite sprite_;
 	bool shouldRemove_;
+	sf::Time timeToPause_;
+	sf::Clock pauseClock_;
+	sf::Time pauseStartedTime_;
 };
 
 #endif

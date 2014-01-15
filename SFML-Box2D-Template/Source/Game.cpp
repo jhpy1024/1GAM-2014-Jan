@@ -7,11 +7,13 @@
 #include "../Include/JumpPowerup.hpp"
 #include "../Include/tmx/tmx2box2d.h"
 #include "../Include/GotCoinMessage.hpp"
+#include "../Include/ResumedMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/GetHealthMessage.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
+#include "../Include/PauseEntityMessage.hpp"
 #include "../Include/GetVelocityMessage.hpp"
 #include "../Include/GetAmountCoinsMessage.hpp"
 #include "../Include/GotJumpPowerupMessage.hpp"
@@ -302,13 +304,28 @@ void Game::handleMessage(Message& message)
 		}
 		break;
 	case HitSpikeMsg:
-		{			
+		{	
 			particleSystem_.addEmitter(createBloodEmitter(), sf::seconds(0.05f));
 			shouldReset_ = true;
 			GetHealthMessage msg("player");
 			sendMessage(msg);
 			if (msg.getHealth() >= 0) // TODO: Remove this when added checks for if the player is dead.
 				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * 2.f, healthBar_.getTextureRect().height));
+			sendMessage(PauseEntityMessage("player", sf::seconds(1.f)));
+		}
+		break;
+	case ResumedMsg:
+		{
+			auto& msg = static_cast<ResumedMessage&>(message);
+			
+			switch (msg.getResumedFrom())
+			{
+			case ResumedFrom::Spikes:
+				shouldReset_ = true;
+				break;
+			default:
+				break;
+			}
 		}
 		break;
 	default:

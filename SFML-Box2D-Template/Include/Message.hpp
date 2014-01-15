@@ -14,6 +14,8 @@ enum MessageType
 		HitSpikeMsg,
 		GetHealthMsg,
 		GotJumpPowerupMsg,
+		PauseEntityMsg,
+		ResumedMsg,
 	};
 
 class Message

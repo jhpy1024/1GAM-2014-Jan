@@ -39,6 +39,8 @@ private:
 	int health_;
 	sf::Clock hurtClock_;
 	const sf::Time HurtDelay;
+
+	b2Vec2 velBeforePause_;
 };
 
 #endif
