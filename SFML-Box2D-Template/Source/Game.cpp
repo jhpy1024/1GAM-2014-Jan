@@ -265,8 +265,8 @@ thor::UniversalEmitter Game::createBloodEmitter()
 	emitter.setParticleLifetime(sf::seconds(1.f));
 	emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(msg.getPosition().x, msg.getPosition().y), 1.f));
     emitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));
-    float xVel = rand() % 360 + 120;
-    float yVel = rand() % 360 + 120;
+    float xVel = static_cast<float>(rand() % 360 + 120);
+    float yVel = static_cast<float>(rand() % 360 + 120);
     emitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(xVel, yVel), 360));
 
     return emitter;
@@ -310,7 +310,7 @@ void Game::handleMessage(Message& message)
 			GetHealthMessage msg("player");
 			sendMessage(msg);
 			if (msg.getHealth() >= 0) // TODO: Remove this when added checks for if the player is dead.
-				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * 2.f, healthBar_.getTextureRect().height));
+				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * 2, healthBar_.getTextureRect().height));
 			sendMessage(PauseEntityMessage("player", sf::seconds(1.f)));
 		}
 		break;
