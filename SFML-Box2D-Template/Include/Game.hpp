@@ -68,6 +68,8 @@ private:
 	bool hasFocus_;
 	bool shouldReset_;
 	sf::Clock clock_;
+
+	sf::Sprite bgSprite_;
 };
 
 #endif

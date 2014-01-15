@@ -15,15 +15,9 @@ public:
 	void handleMessage(Message& message) override;
 
 private:
-	void updateAnimation();
-
-private:
 	const float Speed;
 	int width_;
 	int height_;
-	int currFrame_;
-	int numFrames_;
-	sf::Clock clock_;
 
 	const int DefaultJumpSteps;
 	const int SuperJumpSteps;

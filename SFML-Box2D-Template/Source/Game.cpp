@@ -46,6 +46,10 @@ Game::Game()
 	
 	view_.setCenter(Width / 2.f, Height / 2.f);
 	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
+
+	textureManager_.getTexture("sky").setRepeated(true);
+	bgSprite_.setTexture(textureManager_.getTexture("sky"));
+	bgSprite_.setTextureRect(sf::IntRect(0, 0, mapLoader_.GetMapSize().x, mapLoader_.GetMapSize().y));
 }
 
 Game::~Game()
@@ -66,6 +70,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("spike left", "Assets/spike left.png");
 	textureManager_.addTexture("spike right", "Assets/spike right.png");
 	textureManager_.addTexture("spike down", "Assets/spike down.png");
+	textureManager_.addTexture("sky", "Assets/sky.png");
 }
 
 void Game::createEntities()
@@ -215,6 +220,7 @@ void Game::render()
 	{
 		window_.clear(sf::Color::Black);
 
+		window_.draw(bgSprite_);
 		window_.setView(view_);
 		window_.draw(mapLoader_);
 

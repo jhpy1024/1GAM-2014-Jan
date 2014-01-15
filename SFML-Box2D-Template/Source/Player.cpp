@@ -15,8 +15,6 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, Speed(5.f)
 	, width_(70)
 	, height_(94)
-	, currFrame_(0)
-	, numFrames_(11)
 	, DefaultJumpSteps(6)
 	, SuperJumpSteps(15)
 	, jumpStepsLeft_(0)
@@ -69,11 +67,13 @@ void Player::handleInput()
 	{
 		body_->SetLinearVelocity(b2Vec2(-Speed, body_->GetLinearVelocity().y));
 		direction_ = Direction::Left;
+		sprite_.setScale(-1.f, 1.f);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		body_->SetLinearVelocity(b2Vec2(Speed, body_->GetLinearVelocity().y));
 		direction_ = Direction::Right;
+		sprite_.setScale(1.f, 1.f);
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && footSensor_.getNumContacts() >= 1)
@@ -83,7 +83,6 @@ void Player::handleInput()
 void Player::update(sf::Time)
 {
 	footBody_->SetTransform(b2Vec2(body_->GetPosition().x, body_->GetPosition().y + pixelsToMeters(height_ / 2.f)), footBody_->GetAngle());
-	updateAnimation();
 
 	if (superJump_)
 	{
@@ -109,15 +108,6 @@ void Player::update(sf::Time)
 
 void Player::render(sf::RenderWindow& window)
 {
-	switch (direction_)
-	{
-	case Direction::Left:
-		sprite_.setTextureRect(sf::IntRect(sprite_.getTextureRect().left, sprite_.getTextureRect().top, -width_, height_));
-		break;
-	case Direction::Right:
-		sprite_.setTextureRect(sf::IntRect(sprite_.getTextureRect().left, sprite_.getTextureRect().top, width_, height_));
-	}
-
 	window.draw(sprite_);
 }
 
@@ -185,20 +175,5 @@ void Player::handleMessage(Message& message)
 		break;
 	default:
 		break;
-	}
-}
-
-void Player::updateAnimation()
-{
-	if (clock_.getElapsedTime() >= sf::milliseconds(50))
-    {
-		++currFrame_;
-
-		if (currFrame_ == numFrames_)
-			currFrame_ = 0;
-
-		sprite_.setTextureRect(sf::IntRect(width_ * currFrame_, 0, sprite_.getTextureRect().width, height_));
-
-		clock_.restart();
 	}
 }
