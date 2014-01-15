@@ -16,6 +16,8 @@
 #include "../Include/GetAmountCoinsMessage.hpp"
 #include "../Include/GotJumpPowerupMessage.hpp"
 
+#include <Thor/Math/Distributions.hpp>
+
 Game::Game()
 	: Width(1280)
 	, Height(720)
@@ -50,6 +52,17 @@ Game::Game()
 	textureManager_.getTexture("sky").setRepeated(true);
 	bgSprite_.setTexture(textureManager_.getTexture("sky"));
 	bgSprite_.setTextureRect(sf::IntRect(0, 0, mapLoader_.GetMapSize().x, mapLoader_.GetMapSize().y));
+
+	particleSystem_.setTexture(textureManager_.getTexture("particle"));
+	thor::ColorGradient gradient;
+	gradient[0.f] = sf::Color::Red;
+	gradient[0.5f] = sf::Color(255, 112, 112);
+	gradient[1.f] = sf::Color(255, 181, 181);
+	thor::ColorAnimation colorizer(gradient);
+	thor::FadeAnimation fader(0.1f, 0.1f);
+
+	particleSystem_.addAffector(thor::AnimationAffector(colorizer));
+	particleSystem_.addAffector(thor::AnimationAffector(fader));
 }
 
 Game::~Game()
@@ -71,6 +84,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("spike right", "Assets/spike right.png");
 	textureManager_.addTexture("spike down", "Assets/spike down.png");
 	textureManager_.addTexture("sky", "Assets/sky.png");
+	textureManager_.addTexture("particle", "Assets/particle.png");
 }
 
 void Game::createEntities()
@@ -201,6 +215,7 @@ void Game::update(sf::Time delta)
 	if (hasFocus_)
 	{
 		updateView();
+		particleSystem_.update(delta);
 		
 		for (auto& entity : entities_)
 			entity->update(delta);
@@ -231,8 +246,28 @@ void Game::render()
 		window_.draw(coinsText_);
 		window_.draw(healthBar_);
 
+		window_.setView(view_);
+		window_.draw(particleSystem_);
+
 		window_.display();
 	}
+}
+
+thor::UniversalEmitter Game::createBloodEmitter()
+{
+	GetPositionMessage msg("player");
+	sendMessage(msg);
+
+	thor::UniversalEmitter emitter;
+	emitter.setEmissionRate(100.f);
+	emitter.setParticleLifetime(sf::seconds(1.f));
+	emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(msg.getPosition().x, msg.getPosition().y), 1.f));
+    emitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));
+    float xVel = rand() % 360 + 120;
+    float yVel = rand() % 360 + 120;
+    emitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(xVel, yVel), 360));
+
+    return emitter;
 }
 
 void Game::updateView()
@@ -267,7 +302,8 @@ void Game::handleMessage(Message& message)
 		}
 		break;
 	case HitSpikeMsg:
-		{
+		{			
+			particleSystem_.addEmitter(createBloodEmitter(), sf::seconds(0.05f));
 			shouldReset_ = true;
 			GetHealthMessage msg("player");
 			sendMessage(msg);

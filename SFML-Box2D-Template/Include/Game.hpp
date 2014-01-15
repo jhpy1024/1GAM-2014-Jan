@@ -1,11 +1,14 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <SFML/Graphics.hpp>
+
 #include <string>
 #include <vector>
 #include <memory>
 #include <Box2D/Box2D.h>
+#include <SFML/Graphics.hpp>
+#include <Thor/Particles.hpp>
+#include <Thor/Animation.hpp>
 
 #include "Entity.hpp"
 #include "Message.hpp"
@@ -41,6 +44,8 @@ private:
 
 	void reset();
 
+	thor::UniversalEmitter createBloodEmitter();
+
 private:
 	const int Width;
 	const int Height;
@@ -70,6 +75,9 @@ private:
 	sf::Clock clock_;
 
 	sf::Sprite bgSprite_;
+
+	thor::ParticleSystem particleSystem_;
+	sf::Time timePlayerHitSpikes_;
 };
 
 #endif
