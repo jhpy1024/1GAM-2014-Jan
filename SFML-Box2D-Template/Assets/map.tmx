@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="160" height="22" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="techblocks2_1" tilewidth="32" tileheight="32">
-  <image source="techblocks2_1.png" width="256" height="224"/>
+  <image source="../../Release/Assets/techblocks2_1.png" width="256" height="224"/>
  </tileset>
  <tileset firstgid="57" name="asd" tilewidth="32" tileheight="32">
-  <image source="asd.png" width="128" height="128"/>
+  <image source="../../Release/Assets/asd.png" width="128" height="128"/>
  </tileset>
  <layer name="Tile Layer 1" width="160" height="22">
   <data>
@@ -3564,9 +3564,11 @@
     <property name="worth" value="100"/>
    </properties>
   </object>
+  <object x="96" y="128" width="32" height="32"/>
+  <object x="32" y="128" width="32" height="32"/>
  </objectgroup>
  <objectgroup name="Player" width="160" height="22">
-  <object x="64" y="128" width="32" height="32"/>
+  <object x="256" y="128" width="32" height="32"/>
  </objectgroup>
  <objectgroup name="Spikes" width="160" height="22">
   <object x="544" y="640" width="32" height="32"/>
@@ -3609,5 +3611,9 @@
  </objectgroup>
  <objectgroup name="JumpPowerups" width="160" height="22">
   <object x="832" y="480" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup name="Enemies" width="160" height="22">
+  <object x="1248" y="320" width="32" height="32"/>
+  <object x="832" y="512" width="32" height="32"/>
  </objectgroup>
 </map>

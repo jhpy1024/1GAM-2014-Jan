@@ -45,7 +45,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	body_ = game->getWorld()->CreateBody(&bodyDef);
 	body_->CreateFixture(&shape, 1.f);
 	body_->SetFixedRotation(true);
-	body_->SetLinearDamping(2.f);
+	body_->SetLinearDamping(3.f);
 	body_->SetUserData(this);
 
 	// -- Creating foot sensor --

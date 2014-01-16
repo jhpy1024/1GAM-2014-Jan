@@ -1,6 +1,7 @@
 #include "../Include/Game.hpp"
 #include "../Include/Coin.hpp"
 #include "../Include/Spike.hpp"
+#include "../Include/Enemy.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
 #include "../Include/Ground.hpp"
@@ -87,6 +88,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("spike down", "Assets/spike down.png");
 	textureManager_.addTexture("sky", "Assets/sky.png");
 	textureManager_.addTexture("particle", "Assets/particle.png");
+	textureManager_.addTexture("enemy", "Assets/enemy.png");
 }
 
 void Game::createEntities()
@@ -125,7 +127,8 @@ void Game::createWorld()
 				if (!obj.GetPropertyString("worth").empty())
 					worth = std::stoi(obj.GetPropertyString("worth"));
 
-				entities_.push_back(std::unique_ptr<Entity>(new Coin(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this, worth)));
+				entities_.push_back(std::unique_ptr<Entity>(
+					new Coin(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this, worth)));
 			} 
 		}
 		else if (layer.name == "Spikes")
@@ -137,7 +140,8 @@ void Game::createWorld()
 				if (!obj.GetPropertyString("direction").empty())
 					direction = obj.GetPropertyString("direction");
 
-				entities_.push_back(std::unique_ptr<Entity>(new Spike(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this, direction)));
+				entities_.push_back(std::unique_ptr<Entity>(
+					new Spike(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this, direction)));
 			} 
 		}
 		else if (layer.name == "Player")
@@ -155,7 +159,16 @@ void Game::createWorld()
 		{
 			for (auto& obj : layer.objects)
 			{
-				entities_.push_back(std::unique_ptr<Entity>(new JumpPowerup(sf::Vector2f(obj.GetPosition().x, obj.GetPosition().y), this)));
+				entities_.push_back(std::unique_ptr<Entity>(
+					new JumpPowerup(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this)));
+			} 
+		}
+		else if (layer.name == "Enemies")
+		{
+			for (auto& obj : layer.objects)
+			{
+				entities_.push_back(std::unique_ptr<Entity>(
+					new Enemy(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this)));
 			} 
 		}
 	}
@@ -261,7 +274,7 @@ thor::UniversalEmitter Game::createBloodEmitter()
 	sendMessage(msg);
 
 	thor::UniversalEmitter emitter;
-	emitter.setEmissionRate(100.f);
+	emitter.setEmissionRate(300.f);
 	emitter.setParticleLifetime(sf::seconds(1.f));
 	emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(msg.getPosition().x, msg.getPosition().y), 1.f));
     emitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));

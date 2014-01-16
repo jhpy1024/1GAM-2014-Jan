@@ -10,6 +10,8 @@ Spike::Spike(const sf::Vector2f& position, Game* game, const std::string& direct
 	else
 		sprite_.setTexture(game->getTextureManager().getTexture("spike " + direction));
 	sprite_.setTextureRect(sf::IntRect(0, 0, 32, 32));
+	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
+		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(pixelsToMeters(position.x), pixelsToMeters(position.y));
