@@ -16,6 +16,9 @@ public:
 
 private:
 	static int Id;
+
+	const int TextureWidth;
+	const int TextureHeight;
 };
 
 #endif

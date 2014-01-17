@@ -7,17 +7,21 @@ int Enemy::Id = 0;
 Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	: Entity(position, game, "enemy " + std::to_string(Id))
 	, direction_(Direction::Left)
-	, width_(64)
-	, height_(64)
+	, Width(64)
+	, Height(64)
+	, ShapeDecreaseFactor(0.75f)
+	, CannonRotationSpeed(1.f)
+	, CannonTextureWidth(32.f)
+	, CannonTextureHeight(32.f)
 {
 	++Id;
 	sprite_.setTexture(game->getTextureManager().getTexture("enemy"));
-	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
+	sprite_.setTextureRect(sf::IntRect(0, 0, Width, Height));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 
 	cannonSprite_.setTexture(game->getTextureManager().getTexture("cannon"));
-	cannonSprite_.setTextureRect(sf::IntRect(0, 0, 32, 32));
+	cannonSprite_.setTextureRect(sf::IntRect(0, 0, CannonTextureWidth, CannonTextureHeight));
 	cannonSprite_.setOrigin(cannonSprite_.getLocalBounds().left + cannonSprite_.getLocalBounds().width / 2.f,
 		cannonSprite_.getLocalBounds().top + cannonSprite_.getLocalBounds().height);
 	cannonSprite_.setPosition(sprite_.getPosition());
@@ -26,7 +30,7 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	bodyDef.position.Set(pixelsToMeters(position.x), pixelsToMeters(position.y));
 
 	b2PolygonShape shape;
-	shape.SetAsBox(pixelsToMeters(static_cast<float>(width_ * 0.75f)) / 2.f, pixelsToMeters(static_cast<float>(height_ * 0.75f)) / 2.f);
+	shape.SetAsBox(pixelsToMeters(static_cast<float>(Width * ShapeDecreaseFactor)) / 2.f, pixelsToMeters(static_cast<float>(Height * ShapeDecreaseFactor)) / 2.f);
 
 	body_ = game->getWorld()->CreateBody(&bodyDef);
 
@@ -49,7 +53,7 @@ void Enemy::handleInput()
 
 void Enemy::update(sf::Time delta)
 {
-	cannonSprite_.rotate(1.f);
+	cannonSprite_.rotate(CannonRotationSpeed);
 }
 
 void Enemy::render(sf::RenderWindow& window)

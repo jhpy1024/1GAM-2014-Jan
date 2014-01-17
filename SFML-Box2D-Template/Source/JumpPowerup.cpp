@@ -7,11 +7,13 @@ int JumpPowerup::Id = 0;
 
 JumpPowerup::JumpPowerup(const sf::Vector2f& position, Game* game)
 	: Entity(position, game, "jumpPowerup " + std::to_string(Id))
+	, TextureWidth(32)
+	, TextureHeight(32)
 {
 	++Id;
 
 	sprite_.setTexture(game->getTextureManager().getTexture("jumpPowerup"));
-	sprite_.setTextureRect(sf::IntRect(0, 0, 32, 32));
+	sprite_.setTextureRect(sf::IntRect(0, 0, TextureWidth, TextureHeight));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 

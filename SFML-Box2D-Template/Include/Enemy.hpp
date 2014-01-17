@@ -24,10 +24,14 @@ private:
 
 	Direction direction_;
 
-	int width_;
-	int height_;
-
 	sf::Sprite cannonSprite_;
+
+	const int Width;
+	const int Height;
+	const float ShapeDecreaseFactor;
+	const float CannonRotationSpeed;
+	const float CannonTextureWidth;
+	const float CannonTextureHeight;
 };
 
 #endif

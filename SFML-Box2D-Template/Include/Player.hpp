@@ -18,6 +18,7 @@ private:
 	const float Speed;
 	int width_;
 	int height_;
+	const float ShapeDecreaseFactor;
 
 	const int DefaultJumpSteps;
 	const int SuperJumpSteps;
@@ -26,6 +27,7 @@ private:
 	sf::Clock superJumpClock_;
 	sf::Time timeGotJumpPowerup_;
 	sf::Time jumpPowerupTime_;
+	const float JumpForceFactor;
 	bool superJump_;
 
 	b2Body* footBody_;
@@ -39,6 +41,7 @@ private:
 	int health_;
 	sf::Clock hurtClock_;
 	const sf::Time HurtDelay;
+	const float SpikeHealthDecrease;
 
 	b2Vec2 velBeforePause_;
 };

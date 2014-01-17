@@ -17,17 +17,20 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, Speed(5.f)
 	, width_(70)
 	, height_(94)
+	, ShapeDecreaseFactor(0.1f)
 	, DefaultJumpSteps(6)
 	, SuperJumpSteps(15)
 	, jumpStepsLeft_(0)
 	, numJumpSteps_(DefaultJumpSteps)
 	, jumpPowerupTime_(sf::seconds(5.f))
+	, JumpForceFactor(5.f)
 	, superJump_(false)
 	, footSensor_(game)
 	, direction_(Direction::Right)
 	, coins_(0)
 	, health_(100)
 	, HurtDelay(sf::seconds(0.2f))
+	, SpikeHealthDecrease(25.f)
 {
 	sprite_.setTexture(game->getTextureManager().getTexture("player"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
@@ -53,7 +56,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	footDef.position.Set(bodyDef.position.x, bodyDef.position.y + pixelsToMeters(height_ / 2.f));
 	footDef.type = b2_dynamicBody;
 	
-	shape.SetAsBox(pixelsToMeters(width_ / 10.f), pixelsToMeters(height_ / 15.f));
+	shape.SetAsBox(pixelsToMeters(width_ * ShapeDecreaseFactor), pixelsToMeters(height_ * ShapeDecreaseFactor));
 	b2FixtureDef fixtureDef;
 	fixtureDef.isSensor = true;
 	fixtureDef.shape = &shape;
@@ -122,7 +125,7 @@ void Player::update(sf::Time)
 	// If there are still jump steps left, apply the jump force.
 	if (jumpStepsLeft_ > 0)
 	{
-		body_->ApplyForceToCenter(b2Vec2(0.f, -Speed * 5), true);
+		body_->ApplyForceToCenter(b2Vec2(0.f, -Speed * JumpForceFactor), true);
 		--jumpStepsLeft_;
 	}
 
@@ -180,7 +183,7 @@ void Player::handleMessage(Message& message)
 		{
 			if (hurtClock_.getElapsedTime() >= HurtDelay)
 			{
-				health_ -= 25;
+				health_ -= SpikeHealthDecrease;
 				hurtClock_.restart();
 			}
 		}

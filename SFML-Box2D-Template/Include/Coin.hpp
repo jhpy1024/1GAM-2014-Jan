@@ -20,6 +20,9 @@ public:
 private:
 	int worth_;
 	static int CoinId;
+
+	const int TextureWidth;
+	const int TextureHeight;
 };
 
 #endif

@@ -8,11 +8,13 @@ int Coin::CoinId = 0;
 Coin::Coin(const sf::Vector2f& position, Game* game, int worth)
 	: Entity(position, game, "coin " + std::to_string(CoinId))
 	, worth_(worth)
+	, TextureWidth(35)
+	, TextureHeight(35)
 {
 	++CoinId;
 
 	sprite_.setTexture(game->getTextureManager().getTexture("coin" + std::to_string(worth)));
-	sprite_.setTextureRect(sf::IntRect(0, 0, 35, 35));
+	sprite_.setTextureRect(sf::IntRect(0, 0, TextureWidth, TextureHeight));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 

@@ -13,6 +13,10 @@ public:
 	void update(sf::Time delta) override;
 	void render(sf::RenderWindow& window) override;
 	void handleMessage(Message& message) override;
+
+private:
+	const int TextureWidth;
+	const int TextureHeight;
 };
 
 #endif
