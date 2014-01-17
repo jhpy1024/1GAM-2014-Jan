@@ -17,6 +17,7 @@ public:
 	virtual void render(sf::RenderWindow& window) = 0;
 	virtual void handleMessage(Message& message) = 0;
 
+	void remove();
 	bool shouldRemove() const { return shouldRemove_; }
 	b2Body* getBody() { return body_; }
 	std::string getId() const { return id_; }

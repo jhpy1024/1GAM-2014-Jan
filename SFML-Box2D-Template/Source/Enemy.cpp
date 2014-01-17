@@ -60,8 +60,6 @@ void Enemy::update(sf::Time delta)
 {
 	cannonSprite_.rotate(CannonRotationSpeed);
 	
-	std::printf("%f\n", cannonSprite_.getRotation());
-
 	if (fireClock_.getElapsedTime() >= FireDelay && appropriateCannonAngle())
 	{
 		float rotationRads = (cannonSprite_.getRotation() - 90.f) * (3.14159f / 180.f);

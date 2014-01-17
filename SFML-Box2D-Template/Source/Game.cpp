@@ -228,6 +228,7 @@ void Game::reset()
 
 void Game::update(sf::Time delta)
 {
+	std::printf("%d\n", entities_.size());
 	if (hasFocus_)
 	{
 		updateView();

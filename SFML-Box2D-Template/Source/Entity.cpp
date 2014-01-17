@@ -15,3 +15,8 @@ Entity::~Entity()
 	if (game_->getWorld() != nullptr)
 		game_->getWorld()->DestroyBody(body_);
 }
+
+void Entity::remove()
+{
+	shouldRemove_ = true;
+}

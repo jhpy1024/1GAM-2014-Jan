@@ -1,5 +1,6 @@
 #include "../Include/Game.hpp"
 #include "../Include/Entity.hpp"
+#include "../Include/CannonBall.hpp"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/HitSpikeMessage.hpp"
 #include "../Include/ContactListener.hpp"
