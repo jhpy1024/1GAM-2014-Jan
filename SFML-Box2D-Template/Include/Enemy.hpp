@@ -19,6 +19,10 @@ public:
 	void update(sf::Time delta) override;
 	void render(sf::RenderWindow& window) override;
 	void handleMessage(Message& message) override;
+
+private:
+	bool appropriateCannonAngle() const;
+
 private:
 	static int Id;
 
@@ -32,6 +36,10 @@ private:
 	const float CannonRotationSpeed;
 	const float CannonTextureWidth;
 	const float CannonTextureHeight;
+
+	sf::Clock fireClock_;
+	const sf::Time FireDelay;
+	const float FireSpeed;
 };
 
 #endif

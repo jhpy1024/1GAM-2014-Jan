@@ -30,6 +30,8 @@ public:
 	TextureManager& getTextureManager() { return textureManager_; }
 	std::vector<std::unique_ptr<Entity>>& getEntities() { return entities_; }
 
+	void addEntity(Entity* entity);
+
 private:
 	void createEntities();
 	void createWorld();
@@ -78,6 +80,8 @@ private:
 
 	thor::ParticleSystem particleSystem_;
 	sf::Time timePlayerHitSpikes_;
+
+	std::vector<Entity*> entitiesToAdd_;
 };
 
 #endif

@@ -5,12 +5,14 @@
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
 #include "../Include/Ground.hpp"
+#include "../Include/CannonBall.hpp"
 #include "../Include/JumpPowerup.hpp"
 #include "../Include/tmx/tmx2box2d.h"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/ResumedMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/GetHealthMessage.hpp"
+#include "../Include/GetRotationMessage.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
 #include "../Include/SetVelocityMessage.hpp"
@@ -90,6 +92,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("particle", "Assets/particle.png");
 	textureManager_.addTexture("enemy", "Assets/enemy.png");
 	textureManager_.addTexture("cannon", "Assets/cannon.png");
+	textureManager_.addTexture("cannonBall", "Assets/cannonBall.png");
 }
 
 void Game::createEntities()
@@ -204,9 +207,7 @@ void Game::handleInput()
 		entity->handleInput();
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-		{
 			shouldReset_ = true;
-		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			view_.zoom(1.2f);
@@ -217,7 +218,6 @@ void Game::handleInput()
 
 void Game::reset()
 {
-
 	SetVelocityMessage setVel("player", 0.f, 0.f);
 	SetPositionMessage setPos("player", playerStartPos_);
 	sendMessage(setPos);
@@ -239,6 +239,8 @@ void Game::update(sf::Time delta)
 		world_->Step(TimePerFrame.asSeconds(), 6, 3);
 
 		entities_.erase(std::remove_if(entities_.begin(), entities_.end(), [](std::unique_ptr<Entity>& ent) { return ent->shouldRemove(); }), std::end(entities_));
+		std::for_each(entitiesToAdd_.begin(), entitiesToAdd_.end(), [&](Entity* ent) { entities_.push_back(std::unique_ptr<Entity>(ent)); });
+		entitiesToAdd_.clear();
 
 		if (shouldReset_)
 			reset();
@@ -267,6 +269,11 @@ void Game::render()
 
 		window_.display();
 	}
+}
+
+void Game::addEntity(Entity* entity)
+{
+	entitiesToAdd_.push_back(entity);
 }
 
 thor::UniversalEmitter Game::createBloodEmitter()

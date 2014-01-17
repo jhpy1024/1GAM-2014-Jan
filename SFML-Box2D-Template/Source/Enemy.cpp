@@ -1,6 +1,8 @@
 #include "../Include/Game.hpp"
 #include "../Include/Enemy.hpp"
 #include "../Include/Utils.hpp"
+#include "../Include/CannonBall.hpp"
+#include "../Include/GetRotationMessage.hpp"
 
 int Enemy::Id = 0;
 
@@ -13,8 +15,11 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	, CannonRotationSpeed(1.f)
 	, CannonTextureWidth(32.f)
 	, CannonTextureHeight(32.f)
+	, FireDelay(sf::seconds(0.7f))
+	, FireSpeed(0.5f)
 {
 	++Id;
+	
 	sprite_.setTexture(game->getTextureManager().getTexture("enemy"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, Width, Height));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
@@ -54,6 +59,23 @@ void Enemy::handleInput()
 void Enemy::update(sf::Time delta)
 {
 	cannonSprite_.rotate(CannonRotationSpeed);
+	
+	std::printf("%f\n", cannonSprite_.getRotation());
+
+	if (fireClock_.getElapsedTime() >= FireDelay && appropriateCannonAngle())
+	{
+		float rotationRads = (cannonSprite_.getRotation() - 90.f) * (3.14159f / 180.f);
+		game_->addEntity(new CannonBall(
+			sprite_.getPosition(), sf::Vector2f(FireSpeed * std::cos(rotationRads), FireSpeed * std::sin(rotationRads)), game_));
+
+		fireClock_.restart();
+	}
+}
+
+bool Enemy::appropriateCannonAngle() const
+{
+	return (cannonSprite_.getRotation() >= 0.f && cannonSprite_.getRotation() <= 90.f) 
+		|| (cannonSprite_.getRotation() >= 270.f && cannonSprite_.getRotation() <= 360.f);
 }
 
 void Enemy::render(sf::RenderWindow& window)
@@ -76,5 +98,15 @@ void Enemy::render(sf::RenderWindow& window)
 
 void Enemy::handleMessage(Message& message)
 {
-
+	switch (message.getType())
+	{
+	case GetRotationMsg:
+		{
+			auto& msg = static_cast<GetRotationMessage&>(message);
+			msg.setRotation(cannonSprite_.getRotation());
+		}
+		break;
+	default:
+		break;
+	}
 }

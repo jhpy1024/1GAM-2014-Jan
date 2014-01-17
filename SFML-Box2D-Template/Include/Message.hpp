@@ -16,6 +16,7 @@ enum MessageType
 		GotJumpPowerupMsg,
 		PauseEntityMsg,
 		ResumedMsg,
+		GetRotationMsg,
 	};
 
 class Message
