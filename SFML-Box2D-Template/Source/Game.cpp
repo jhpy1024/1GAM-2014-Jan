@@ -89,6 +89,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("sky", "Assets/sky.png");
 	textureManager_.addTexture("particle", "Assets/particle.png");
 	textureManager_.addTexture("enemy", "Assets/enemy.png");
+	textureManager_.addTexture("cannon", "Assets/cannon.png");
 }
 
 void Game::createEntities()

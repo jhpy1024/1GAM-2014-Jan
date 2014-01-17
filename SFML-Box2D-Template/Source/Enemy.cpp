@@ -7,14 +7,20 @@ int Enemy::Id = 0;
 Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	: Entity(position, game, "enemy " + std::to_string(Id))
 	, direction_(Direction::Left)
-	, width_(43)
-	, height_(28)
+	, width_(64)
+	, height_(64)
 {
 	++Id;
 	sprite_.setTexture(game->getTextureManager().getTexture("enemy"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
+
+	cannonSprite_.setTexture(game->getTextureManager().getTexture("cannon"));
+	cannonSprite_.setTextureRect(sf::IntRect(0, 0, 32, 32));
+	cannonSprite_.setOrigin(cannonSprite_.getLocalBounds().left + cannonSprite_.getLocalBounds().width / 2.f,
+		cannonSprite_.getLocalBounds().top + cannonSprite_.getLocalBounds().height);
+	cannonSprite_.setPosition(sprite_.getPosition());
 
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(pixelsToMeters(position.x), pixelsToMeters(position.y));
@@ -43,7 +49,7 @@ void Enemy::handleInput()
 
 void Enemy::update(sf::Time delta)
 {
-	
+	cannonSprite_.rotate(1.f);
 }
 
 void Enemy::render(sf::RenderWindow& window)
@@ -61,6 +67,7 @@ void Enemy::render(sf::RenderWindow& window)
 	}
 
 	window.draw(sprite_);
+	window.draw(cannonSprite_);
 }
 
 void Enemy::handleMessage(Message& message)

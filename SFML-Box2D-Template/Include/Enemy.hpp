@@ -26,6 +26,8 @@ private:
 
 	int width_;
 	int height_;
+
+	sf::Sprite cannonSprite_;
 };
 
 #endif
