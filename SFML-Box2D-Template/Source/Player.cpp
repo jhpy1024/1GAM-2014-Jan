@@ -1,6 +1,7 @@
 #include "../Include/Player.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/Game.hpp"
+#include "../Include/Bullet.hpp"
 #include "../Include/ResumedMessage.hpp"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/GetHealthMessage.hpp"
@@ -32,6 +33,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, HurtDelay(sf::seconds(0.2f))
 	, SpikeHealthDecrease(25.f)
 	, CannonBallHealthDecrease(SpikeHealthDecrease)
+	, FireDelay(sf::seconds(0.5f))
 {
 	sprite_.setTexture(game->getTextureManager().getTexture("player"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
@@ -84,6 +86,19 @@ void Player::handleInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && footSensor_.getNumContacts() >= 1)
 		jumpStepsLeft_ = numJumpSteps_;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && fireDelayFinished())
+		shootBullet();
+}
+
+bool Player::fireDelayFinished()
+{
+	return fireClock_.getElapsedTime() >= FireDelay;
+}
+
+void Player::shootBullet()
+{
+	game_->addEntity(new Bullet(sprite_.getPosition(), (direction_ == Direction::Left ? -1 : 1), game_));
+	fireClock_.restart();
 }
 
 void Player::update(sf::Time)

@@ -15,6 +15,10 @@ public:
 	void handleMessage(Message& message) override;
 
 private:
+	void shootBullet();
+	bool fireDelayFinished();
+
+private:
 	const float Speed;
 	int width_;
 	int height_;
@@ -43,6 +47,9 @@ private:
 	const sf::Time HurtDelay;
 	const float SpikeHealthDecrease;
 	const float CannonBallHealthDecrease;
+
+	sf::Clock fireClock_;
+	const sf::Time FireDelay;
 
 	b2Vec2 velBeforePause_;
 };
