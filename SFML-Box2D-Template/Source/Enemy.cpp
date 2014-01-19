@@ -19,6 +19,7 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	, FireDelay(sf::seconds(0.7f))
 	, FireSpeed(0.5f)
 	, ShootRange(550.f)
+	, health_(100)
 {
 	++Id;
 	
@@ -51,6 +52,12 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	body_->SetUserData(this);
 
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
+
+	healthBar_.setTexture(game->getTextureManager().getTexture("enemyHealthBar"));
+	healthBar_.setTextureRect(sf::IntRect(0, 0, 100, 15));
+	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f, 
+		healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
+	healthBar_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y - sprite_.getLocalBounds().height / 2.f);
 }
 
 void Enemy::handleInput()
@@ -107,6 +114,7 @@ void Enemy::render(sf::RenderWindow& window)
 	}
 
 	window.draw(sprite_);
+	window.draw(healthBar_);
 	window.draw(cannonSprite_);
 }
 

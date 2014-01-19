@@ -44,6 +44,9 @@ private:
 	const float FireSpeed;
 
 	const float ShootRange;
+
+	sf::Sprite healthBar_;
+	int health_;
 };
 
 #endif

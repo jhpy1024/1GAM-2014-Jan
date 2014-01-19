@@ -115,6 +115,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("cannon", "Assets/cannon.png");
 	textureManager_.addTexture("cannonBall", "Assets/cannonBall.png");
 	textureManager_.addTexture("bullet", "Assets/bullet.png");
+	textureManager_.addTexture("enemyHealthBar", "Assets/enemyHealthBar.png");
 }
 
 void Game::createEntities()
