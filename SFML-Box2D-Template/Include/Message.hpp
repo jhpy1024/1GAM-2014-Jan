@@ -17,6 +17,7 @@ enum MessageType
 		PauseEntityMsg,
 		ResumedMsg,
 		GetRotationMsg,
+		HitCannonBallMsg,
 	};
 
 class Message

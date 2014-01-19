@@ -210,6 +210,9 @@ void Player::handleMessage(Message& message)
 			velBeforePause_ = body_->GetLinearVelocity();
 		}
 		break;
+	case HitCannonBallMsg:
+		
+		break;
 	default:
 		break;
 	}

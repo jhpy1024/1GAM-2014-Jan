@@ -5,6 +5,7 @@
 #include "../Include/HitSpikeMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/PlayerFootSensor.hpp"
+#include "../Include/HitCannonBallMessage.hpp"
 #include "../Include/GotJumpPowerupMessage.hpp"
 
 ContactListener::ContactListener(Game* game)
@@ -53,6 +54,32 @@ ContactListener::ContactListener(Game* game)
 			{
 				auto coin = static_cast<Coin*>(entityB);
 				game->sendMessage(GotCoinMessage("all", entityB->getId(), *coin));
+			}
+		}
+	}
+	);
+
+	// player vs cannon ball
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId().find("cannonBall") != entityA->getId().npos && entityB->getId() == "player")
+			{
+				auto cannonBall = static_cast<CannonBall*>(entityA);
+				HitCannonBallMessage msg("all", *cannonBall);
+				game->sendMessage(msg);
+			}
+			else if (entityA->getId() == "player" && entityB->getId().find("cannonBall") != entityB->getId().npos)
+			{
+				auto cannonBall = static_cast<CannonBall*>(entityB);
+				HitCannonBallMessage msg("all", *cannonBall);
+				game->sendMessage(msg);
 			}
 		}
 	}

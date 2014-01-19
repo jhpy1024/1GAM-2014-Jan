@@ -1,11 +1,12 @@
 #include "../Include/Game.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/CannonBall.hpp"
+#include "../Include/HitCannonBallMessage.hpp"
 
 int CannonBall::Id = 0;
 
 CannonBall::CannonBall(const sf::Vector2f& position, const sf::Vector2f& velocity, Game* game)
-	: Entity(position, game, "cannonBall")
+	: Entity(position, game, "cannonBall " + std::to_string(Id))
 	, TextureWidth(16)
 	, TextureHeight(16)
 {
@@ -57,5 +58,14 @@ void CannonBall::render(sf::RenderWindow& window)
 
 void CannonBall::handleMessage(Message& message)
 {
-
+	switch (message.getType())
+	{
+	case HitCannonBallMsg:
+		{
+			auto msg = static_cast<HitCannonBallMessage&>(message);
+			if (msg.getCannonBall().getId() == id_)
+				shouldRemove_ = true;
+		}
+		break;
+	}
 }
