@@ -1,5 +1,6 @@
 #include "../Include/Game.hpp"
 #include "../Include/Entity.hpp"
+#include "../Include/Bullet.hpp"
 #include "../Include/CannonBall.hpp"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/HitSpikeMessage.hpp"
@@ -157,6 +158,30 @@ ContactListener::ContactListener(Game* game)
 			{
 				auto cannonBall = static_cast<CannonBall*>(entityB);
 				cannonBall->remove();
+			}
+		}
+	}
+	);
+
+	// bullet vs ground
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId().find("bullet") != entityA->getId().npos && entityB->getId() == "ground")
+			{
+				auto bullet = static_cast<Bullet*>(entityA);
+				bullet->remove();
+			}
+			else if (entityA->getId() == "ground" && entityB->getId().find("bullet") != entityB->getId().npos)
+			{
+				auto bullet = static_cast<Bullet*>(entityB);
+				bullet->remove();
 			}
 		}
 	}

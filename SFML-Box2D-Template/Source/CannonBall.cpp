@@ -37,6 +37,7 @@ CannonBall::CannonBall(const sf::Vector2f& position, const sf::Vector2f& velocit
 	body_->CreateFixture(&fixtureDef);
 	body_->SetFixedRotation(true);
 	body_->SetUserData(this);
+	body_->SetGravityScale(0.f);
 	body_->ApplyLinearImpulse(b2Vec2(velocity.x, velocity.y), body_->GetWorldCenter(), true);
 
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));

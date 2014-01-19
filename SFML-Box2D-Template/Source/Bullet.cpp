@@ -6,7 +6,7 @@ int Bullet::Id = 0;
 
 Bullet::Bullet(const sf::Vector2f& position, int direction, Game* game)
 	: Entity(position, game, "bullet " + std::to_string(Id))
-	, Speed(1.f)
+	, Speed(0.5f)
 	, TextureWidth(16)
 	, TextureHeight(16)
 {
@@ -36,6 +36,7 @@ Bullet::Bullet(const sf::Vector2f& position, int direction, Game* game)
 	body_->CreateFixture(&fixtureDef);
 	body_->SetFixedRotation(true);
 	body_->SetUserData(this);
+	body_->SetGravityScale(0.f);
 	body_->ApplyLinearImpulse(b2Vec2(Speed * direction, 0.f), body_->GetWorldCenter(), true);
 
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
