@@ -22,6 +22,7 @@ public:
 
 private:
 	void fireCannon();
+	bool inRangeOfPlayer() const;
 	bool appropriateCannonAngle() const;
 
 private:
@@ -41,6 +42,8 @@ private:
 	sf::Clock fireClock_;
 	const sf::Time FireDelay;
 	const float FireSpeed;
+
+	const float ShootRange;
 };
 
 #endif

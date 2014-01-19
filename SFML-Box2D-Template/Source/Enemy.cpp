@@ -2,6 +2,7 @@
 #include "../Include/Enemy.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/CannonBall.hpp"
+#include "../Include/GetPositionMessage.hpp"
 #include "../Include/GetRotationMessage.hpp"
 
 int Enemy::Id = 0;
@@ -17,6 +18,7 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	, CannonTextureHeight(32.f)
 	, FireDelay(sf::seconds(0.7f))
 	, FireSpeed(0.5f)
+	, ShootRange(500.f)
 {
 	++Id;
 	
@@ -60,7 +62,7 @@ void Enemy::update(sf::Time delta)
 {
 	cannonSprite_.rotate(CannonRotationSpeed);
 	
-	if (fireClock_.getElapsedTime() >= FireDelay && appropriateCannonAngle())
+	if (fireClock_.getElapsedTime() >= FireDelay && appropriateCannonAngle() && inRangeOfPlayer())
 	{
 		fireCannon();
 		fireClock_.restart();
@@ -72,6 +74,16 @@ void Enemy::fireCannon()
 	float rotationRads = (cannonSprite_.getRotation() - 90.f) * (3.14159f / 180.f);
 	game_->addEntity(new CannonBall(
 		sprite_.getPosition(), sf::Vector2f(FireSpeed * std::cos(rotationRads), FireSpeed * std::sin(rotationRads)), game_));
+}
+
+bool Enemy::inRangeOfPlayer() const
+{
+	GetPositionMessage msg("player");
+	game_->sendMessage(msg);
+
+	float distToPlayerSquared = std::pow((sprite_.getPosition().x - msg.getPosition().x), 2) + std::pow((sprite_.getPosition().y - msg.getPosition().y), 2);
+
+	return std::abs(distToPlayerSquared) <= std::pow(ShootRange, 2);
 }
 
 bool Enemy::appropriateCannonAngle() const
