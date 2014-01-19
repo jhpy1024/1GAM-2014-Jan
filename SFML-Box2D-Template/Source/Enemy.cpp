@@ -18,7 +18,7 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	, CannonTextureHeight(32.f)
 	, FireDelay(sf::seconds(0.7f))
 	, FireSpeed(0.5f)
-	, ShootRange(500.f)
+	, ShootRange(550.f)
 {
 	++Id;
 	
