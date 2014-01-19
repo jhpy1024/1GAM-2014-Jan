@@ -325,6 +325,7 @@ void Game::handleMessage(Message& message)
 		}
 		break;
 	case HitSpikeMsg:
+	case HitCannonBallMsg:
 		{	
 			particleSystem_.addEmitter(createBloodEmitter(), sf::seconds(0.05f));
 			shouldReset_ = true;

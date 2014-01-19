@@ -31,6 +31,7 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, health_(100)
 	, HurtDelay(sf::seconds(0.2f))
 	, SpikeHealthDecrease(25.f)
+	, CannonBallHealthDecrease(SpikeHealthDecrease)
 {
 	sprite_.setTexture(game->getTextureManager().getTexture("player"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
@@ -211,7 +212,9 @@ void Player::handleMessage(Message& message)
 		}
 		break;
 	case HitCannonBallMsg:
-		
+		{
+			health_ -= CannonBallHealthDecrease;
+		}
 		break;
 	default:
 		break;

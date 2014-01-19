@@ -42,6 +42,7 @@ private:
 	sf::Clock hurtClock_;
 	const sf::Time HurtDelay;
 	const float SpikeHealthDecrease;
+	const float CannonBallHealthDecrease;
 
 	b2Vec2 velBeforePause_;
 };
