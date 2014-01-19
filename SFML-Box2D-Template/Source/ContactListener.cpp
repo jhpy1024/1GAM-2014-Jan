@@ -138,6 +138,30 @@ ContactListener::ContactListener(Game* game)
 	}
 	);
 
+	// cannonball vs ground
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId().find("cannonBall") != entityA->getId().npos && entityB->getId() == "ground")
+			{
+				auto cannonBall = static_cast<CannonBall*>(entityA);
+				cannonBall->remove();
+			}
+			else if (entityA->getId() == "ground" && entityB->getId().find("cannonBall") != entityB->getId().npos)
+			{
+				auto cannonBall = static_cast<CannonBall*>(entityB);
+				cannonBall->remove();
+			}
+		}
+	}
+	);
+
 	// [end] playerFootSensor vs ground
 	endFunctions_.push_back
 	(
