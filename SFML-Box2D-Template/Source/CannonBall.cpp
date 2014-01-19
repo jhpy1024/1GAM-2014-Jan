@@ -1,6 +1,7 @@
 #include "../Include/Game.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/CannonBall.hpp"
+#include "../Include/CannonFiredMessage.hpp"
 #include "../Include/HitCannonBallMessage.hpp"
 
 int CannonBall::Id = 0;
@@ -39,6 +40,9 @@ CannonBall::CannonBall(const sf::Vector2f& position, const sf::Vector2f& velocit
 	body_->ApplyLinearImpulse(b2Vec2(velocity.x, velocity.y), body_->GetWorldCenter(), true);
 
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
+
+	CannonFiredMessage msg("all", sprite_.getPosition());
+	game->sendMessage(msg);
 }
 
 void CannonBall::handleInput() 

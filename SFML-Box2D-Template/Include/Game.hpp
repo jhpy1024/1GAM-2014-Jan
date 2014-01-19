@@ -46,7 +46,10 @@ private:
 
 	void reset();
 
+	void createBloodParticleSystem();
+	void createSmokeParticleSystem();
 	thor::UniversalEmitter createBloodEmitter();
+	thor::UniversalEmitter createSmokeEmitter(const sf::Vector2f& position);
 
 private:
 	const int Width;
@@ -78,7 +81,8 @@ private:
 
 	sf::Sprite bgSprite_;
 
-	thor::ParticleSystem particleSystem_;
+	thor::ParticleSystem bloodParticleSystem_;
+	thor::ParticleSystem smokeParticleSystem_;
 	sf::Time timePlayerHitSpikes_;
 
 	std::vector<Entity*> entitiesToAdd_;

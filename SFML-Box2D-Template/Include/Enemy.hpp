@@ -21,6 +21,7 @@ public:
 	void handleMessage(Message& message) override;
 
 private:
+	void fireCannon();
 	bool appropriateCannonAngle() const;
 
 private:

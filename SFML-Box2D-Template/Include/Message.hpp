@@ -18,6 +18,7 @@ enum MessageType
 		ResumedMsg,
 		GetRotationMsg,
 		HitCannonBallMsg,
+		CannonFiredMsg,
 	};
 
 class Message

@@ -62,12 +62,16 @@ void Enemy::update(sf::Time delta)
 	
 	if (fireClock_.getElapsedTime() >= FireDelay && appropriateCannonAngle())
 	{
-		float rotationRads = (cannonSprite_.getRotation() - 90.f) * (3.14159f / 180.f);
-		game_->addEntity(new CannonBall(
-			sprite_.getPosition(), sf::Vector2f(FireSpeed * std::cos(rotationRads), FireSpeed * std::sin(rotationRads)), game_));
-
+		fireCannon();
 		fireClock_.restart();
 	}
+}
+
+void Enemy::fireCannon()
+{
+	float rotationRads = (cannonSprite_.getRotation() - 90.f) * (3.14159f / 180.f);
+	game_->addEntity(new CannonBall(
+		sprite_.getPosition(), sf::Vector2f(FireSpeed * std::cos(rotationRads), FireSpeed * std::sin(rotationRads)), game_));
 }
 
 bool Enemy::appropriateCannonAngle() const

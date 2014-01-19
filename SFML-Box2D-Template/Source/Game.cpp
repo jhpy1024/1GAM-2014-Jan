@@ -12,6 +12,7 @@
 #include "../Include/ResumedMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/GetHealthMessage.hpp"
+#include "../Include/CannonFiredMessage.hpp"
 #include "../Include/GetRotationMessage.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/SetPositionMessage.hpp"
@@ -58,16 +59,34 @@ Game::Game()
 	bgSprite_.setTexture(textureManager_.getTexture("sky"));
 	bgSprite_.setTextureRect(sf::IntRect(0, 0, mapLoader_.GetMapSize().x, mapLoader_.GetMapSize().y));
 
-	particleSystem_.setTexture(textureManager_.getTexture("particle"));
+	createBloodParticleSystem();
+	createSmokeParticleSystem();
+}
+
+void Game::createBloodParticleSystem()
+{
+	bloodParticleSystem_.setTexture(textureManager_.getTexture("particle"));
 	thor::ColorGradient gradient;
 	gradient[0.f] = sf::Color::Red;
 	gradient[0.5f] = sf::Color(255, 112, 112);
 	gradient[1.f] = sf::Color(255, 181, 181);
 	thor::ColorAnimation colorizer(gradient);
 	thor::FadeAnimation fader(0.1f, 0.1f);
+	bloodParticleSystem_.addAffector(thor::AnimationAffector(colorizer));
+	bloodParticleSystem_.addAffector(thor::AnimationAffector(fader));
+}
 
-	particleSystem_.addAffector(thor::AnimationAffector(colorizer));
-	particleSystem_.addAffector(thor::AnimationAffector(fader));
+void Game::createSmokeParticleSystem()
+{
+	smokeParticleSystem_.setTexture(textureManager_.getTexture("smokeParticle"));
+	thor::ColorGradient gradient;
+	gradient[0.f] = sf::Color::Black;
+	gradient[0.5f] = sf::Color(77, 77, 77);
+	gradient[1.f] = sf::Color(150, 150, 150);
+	thor::ColorAnimation colorizer(gradient);
+	thor::FadeAnimation fader(0.1f, 0.7f);
+	smokeParticleSystem_.addAffector(thor::AnimationAffector(colorizer));
+	smokeParticleSystem_.addAffector(thor::AnimationAffector(fader));
 }
 
 Game::~Game()
@@ -90,6 +109,7 @@ void Game::loadTextures()
 	textureManager_.addTexture("spike down", "Assets/spike down.png");
 	textureManager_.addTexture("sky", "Assets/sky.png");
 	textureManager_.addTexture("particle", "Assets/particle.png");
+	textureManager_.addTexture("smokeParticle", "Assets/smokeParticle.png");
 	textureManager_.addTexture("enemy", "Assets/enemy.png");
 	textureManager_.addTexture("cannon", "Assets/cannon.png");
 	textureManager_.addTexture("cannonBall", "Assets/cannonBall.png");
@@ -231,7 +251,8 @@ void Game::update(sf::Time delta)
 	if (hasFocus_)
 	{
 		updateView();
-		particleSystem_.update(delta);
+		bloodParticleSystem_.update(delta);
+		smokeParticleSystem_.update(delta);
 		
 		for (auto& entity : entities_)
 			entity->update(delta);
@@ -265,7 +286,8 @@ void Game::render()
 		window_.draw(healthBar_);
 
 		window_.setView(view_);
-		window_.draw(particleSystem_);
+		window_.draw(bloodParticleSystem_);
+		window_.draw(smokeParticleSystem_);
 
 		window_.display();
 	}
@@ -293,6 +315,20 @@ thor::UniversalEmitter Game::createBloodEmitter()
     return emitter;
 }
 
+thor::UniversalEmitter Game::createSmokeEmitter(const sf::Vector2f& position)
+{
+	thor::UniversalEmitter emitter;
+	emitter.setEmissionRate(300.f);
+	emitter.setParticleLifetime(sf::seconds(0.4f));
+	emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(position.x, position.y), 1.f));
+    emitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));
+    float xVel = static_cast<float>(rand() % 360 + 120);
+    float yVel = static_cast<float>(rand() % 360 + 120);
+    emitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(xVel, yVel), 360));
+
+    return emitter;
+}
+
 void Game::updateView()
 {
 	GetPositionMessage msg("player");
@@ -303,7 +339,6 @@ void Game::updateView()
 
 void Game::sendMessage(Message& message)
 {
-	
 	for (auto& entity : entities_)
 	{
 		if (message.getTargetId() == entity->getId() || message.getTargetId() == "all")
@@ -327,13 +362,19 @@ void Game::handleMessage(Message& message)
 	case HitSpikeMsg:
 	case HitCannonBallMsg:
 		{	
-			particleSystem_.addEmitter(createBloodEmitter(), sf::seconds(0.05f));
+			bloodParticleSystem_.addEmitter(createBloodEmitter(), sf::seconds(0.05f));
 			shouldReset_ = true;
 			GetHealthMessage msg("player");
 			sendMessage(msg);
 			if (msg.getHealth() >= 0) // TODO: Remove this when added checks for if the player is dead.
 				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * 2, healthBar_.getTextureRect().height));
 			sendMessage(PauseEntityMessage("player", sf::seconds(1.f)));
+		}
+		break;
+	case CannonFiredMsg:
+		{
+			auto& msg = static_cast<CannonFiredMessage&>(message);
+			smokeParticleSystem_.addEmitter(createSmokeEmitter(msg.getPosition()), sf::seconds(0.05f));
 		}
 		break;
 	case ResumedMsg:
