@@ -35,6 +35,7 @@ Game::Game()
 	, mapLoader_("Assets/")
 	, hasFocus_(true)
 	, shouldReset_(false)
+	, HealthBarScale(4)
 {
 	createEntities();
 	createWorld();
@@ -367,7 +368,7 @@ void Game::handleMessage(Message& message)
 			GetHealthMessage msg("player");
 			sendMessage(msg);
 			if (msg.getHealth() >= 0) // TODO: Remove this when added checks for if the player is dead.
-				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * 2, healthBar_.getTextureRect().height));
+				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * HealthBarScale, healthBar_.getTextureRect().height));
 			sendMessage(PauseEntityMessage("player", sf::seconds(1.f)));
 		}
 		break;

@@ -86,6 +86,8 @@ private:
 	sf::Time timePlayerHitSpikes_;
 
 	std::vector<Entity*> entitiesToAdd_;
+
+	const int HealthBarScale;
 };
 
 #endif
