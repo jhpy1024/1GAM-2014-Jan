@@ -19,6 +19,7 @@ enum MessageType
 		GetRotationMsg,
 		HitCannonBallMsg,
 		CannonFiredMsg,
+		ShotEnemyMsg,
 	};
 
 class Message

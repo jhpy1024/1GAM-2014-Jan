@@ -6,6 +6,7 @@
 #include "../Include/HitSpikeMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/PlayerFootSensor.hpp"
+#include "../Include/ShotEnemyMessage.hpp"
 #include "../Include/HitCannonBallMessage.hpp"
 #include "../Include/GotJumpPowerupMessage.hpp"
 
@@ -182,6 +183,38 @@ ContactListener::ContactListener(Game* game)
 			{
 				auto bullet = static_cast<Bullet*>(entityB);
 				bullet->remove();
+			}
+		}
+	}
+	);
+
+	// bullet vs enemy
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId().find("bullet") != entityA->getId().npos && entityB->getId().find("enemy") != entityB->getId().npos)
+			{
+				auto bullet = static_cast<Bullet*>(entityA);
+				bullet->remove();
+
+				auto enemy = static_cast<Enemy*>(entityB);
+				ShotEnemyMessage msg("all", *enemy);
+				game->sendMessage(msg);
+			}
+			else if (entityA->getId().find("enemy") != entityB->getId().npos && entityB->getId().find("bullet") != entityB->getId().npos)
+			{
+				auto bullet = static_cast<Bullet*>(entityB);
+				bullet->remove();
+
+				auto enemy = static_cast<Enemy*>(entityA);
+				ShotEnemyMessage msg("all", *enemy);
+				game->sendMessage(msg);
 			}
 		}
 	}

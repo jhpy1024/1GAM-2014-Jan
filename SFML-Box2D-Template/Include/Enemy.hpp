@@ -22,6 +22,7 @@ public:
 
 private:
 	void fireCannon();
+	void hitByBullet();
 	bool inRangeOfPlayer() const;
 	bool appropriateCannonAngle() const;
 
@@ -47,6 +48,8 @@ private:
 
 	sf::Sprite healthBar_;
 	int health_;
+
+	const int BulletHealthDecrease;
 };
 
 #endif

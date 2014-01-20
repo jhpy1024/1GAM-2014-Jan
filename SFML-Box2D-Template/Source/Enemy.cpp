@@ -2,6 +2,7 @@
 #include "../Include/Enemy.hpp"
 #include "../Include/Utils.hpp"
 #include "../Include/CannonBall.hpp"
+#include "../Include/ShotEnemyMessage.hpp"
 #include "../Include/GetPositionMessage.hpp"
 #include "../Include/GetRotationMessage.hpp"
 
@@ -20,6 +21,7 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 	, FireSpeed(0.5f)
 	, ShootRange(550.f)
 	, health_(100)
+	, BulletHealthDecrease(25)
 {
 	++Id;
 	
@@ -118,6 +120,20 @@ void Enemy::render(sf::RenderWindow& window)
 	window.draw(cannonSprite_);
 }
 
+void Enemy::hitByBullet()
+{
+	health_ -= BulletHealthDecrease;
+
+	// Have we died?
+	if (health_ <= 0)
+		shouldRemove_ = true;
+
+	healthBar_.setTextureRect(sf::IntRect(0, 0, health_, healthBar_.getTextureRect().height));
+	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
+				healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
+	healthBar_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y - sprite_.getLocalBounds().height / 2.f);
+}
+
 void Enemy::handleMessage(Message& message)
 {
 	switch (message.getType())
@@ -126,6 +142,13 @@ void Enemy::handleMessage(Message& message)
 		{
 			auto& msg = static_cast<GetRotationMessage&>(message);
 			msg.setRotation(cannonSprite_.getRotation());
+		}
+		break;
+	case ShotEnemyMsg:
+		{
+			auto& msg = static_cast<ShotEnemyMessage&>(message);
+			if (msg.getEnemy().getId() == id_)
+				hitByBullet();
 		}
 		break;
 	default:
