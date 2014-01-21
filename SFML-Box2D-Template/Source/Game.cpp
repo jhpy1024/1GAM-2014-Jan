@@ -6,6 +6,7 @@
 #include "../Include/Player.hpp"
 #include "../Include/Ground.hpp"
 #include "../Include/CannonBall.hpp"
+#include "../Include/MonkeyEnemy.hpp"
 #include "../Include/JumpPowerup.hpp"
 #include "../Include/tmx/tmx2box2d.h"
 #include "../Include/GotCoinMessage.hpp"
@@ -181,6 +182,19 @@ void Game::createWorld()
 			{
 				entities_.push_back(std::unique_ptr<Entity>(
 					new Enemy(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this)));
+			} 
+		}
+		else if (layer.name == "MonkeyEnemies")
+		{
+			for (auto& obj : layer.objects)
+			{
+				std::string direction = "left";
+
+				if (!obj.GetPropertyString("direction").empty())
+					direction = obj.GetPropertyString("direction");
+
+				entities_.push_back(std::unique_ptr<Entity>(
+					new MonkeyEnemy(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this, direction)));
 			} 
 		}
 	}

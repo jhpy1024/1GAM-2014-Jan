@@ -3570,4 +3570,11 @@
  <objectgroup name="Enemies" width="160" height="22">
   <object x="1312" y="320" width="64" height="64"/>
  </objectgroup>
+ <objectgroup name="MonkeyEnemies" width="160" height="22">
+  <object x="1536" y="608" width="64" height="64">
+   <properties>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
