@@ -13,8 +13,8 @@ CannonBall::CannonBall(const sf::Vector2f& position, const sf::Vector2f& velocit
 {
 	++Id;
 
-	sprite_.setTexture(game->getTextureManager().getTexture("cannonBall"));
-	sprite_.setTextureRect(sf::IntRect(0, 0, TextureWidth, TextureHeight));
+	sprite_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
+	sprite_.setTextureRect(sf::IntRect(16, 0, TextureWidth, TextureHeight));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 

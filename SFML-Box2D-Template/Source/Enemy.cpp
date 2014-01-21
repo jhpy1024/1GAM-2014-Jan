@@ -25,13 +25,13 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 {
 	++Id;
 	
-	sprite_.setTexture(game->getTextureManager().getTexture("enemy"));
-	sprite_.setTextureRect(sf::IntRect(0, 0, Width, Height));
+	sprite_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
+	sprite_.setTextureRect(sf::IntRect(64, 0, Width, Height));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 
-	cannonSprite_.setTexture(game->getTextureManager().getTexture("cannon"));
-	cannonSprite_.setTextureRect(sf::IntRect(0, 0, CannonTextureWidth, CannonTextureHeight));
+	cannonSprite_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
+	cannonSprite_.setTextureRect(sf::IntRect(32, 0, CannonTextureWidth, CannonTextureHeight));
 	cannonSprite_.setOrigin(cannonSprite_.getLocalBounds().left + cannonSprite_.getLocalBounds().width / 2.f,
 		cannonSprite_.getLocalBounds().top + cannonSprite_.getLocalBounds().height);
 	cannonSprite_.setPosition(sprite_.getPosition());
@@ -55,8 +55,8 @@ Enemy::Enemy(const sf::Vector2f& position, Game* game)
 
 	sprite_.setPosition(metersToPixels(body_->GetPosition().x), metersToPixels(body_->GetPosition().y));
 
-	healthBar_.setTexture(game->getTextureManager().getTexture("enemyHealthBar"));
-	healthBar_.setTextureRect(sf::IntRect(0, 0, 100, 15));
+	healthBar_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
+	healthBar_.setTextureRect(sf::IntRect(0, 100, 100, 15));
 	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f, 
 		healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
 	healthBar_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y - sprite_.getLocalBounds().height / 2.f);
@@ -128,7 +128,7 @@ void Enemy::hitByBullet()
 	if (health_ <= 0)
 		shouldRemove_ = true;
 
-	healthBar_.setTextureRect(sf::IntRect(0, 0, health_, healthBar_.getTextureRect().height));
+	healthBar_.setTextureRect(sf::IntRect(0, 100, health_, healthBar_.getTextureRect().height));
 	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
 				healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
 	healthBar_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y - sprite_.getLocalBounds().height / 2.f);

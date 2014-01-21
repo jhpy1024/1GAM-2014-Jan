@@ -79,7 +79,7 @@ private:
 	bool shouldReset_;
 	sf::Clock clock_;
 
-	sf::Sprite bgSprite_;
+	sf::RectangleShape bgShape_;
 
 	thor::ParticleSystem bloodParticleSystem_;
 	thor::ParticleSystem smokeParticleSystem_;

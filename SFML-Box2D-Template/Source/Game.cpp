@@ -48,7 +48,8 @@ Game::Game()
 	coinsText_.setCharacterSize(30);
 	coinsText_.setPosition(32.f, 30.f);
 
-	healthBar_.setTexture(textureManager_.getTexture("healthBar"));
+	healthBar_.setTexture(textureManager_.getTexture("spriteSheet"));
+	healthBar_.setTextureRect(sf::IntRect(0, 150, 400, 15));
 	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
 		healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
 	healthBar_.setPosition(Width / 2.f, 50.f);
@@ -56,9 +57,8 @@ Game::Game()
 	view_.setCenter(Width / 2.f, Height / 2.f);
 	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
 
-	textureManager_.getTexture("sky").setRepeated(true);
-	bgSprite_.setTexture(textureManager_.getTexture("sky"));
-	bgSprite_.setTextureRect(sf::IntRect(0, 0, mapLoader_.GetMapSize().x, mapLoader_.GetMapSize().y));
+	bgShape_.setSize(sf::Vector2f(mapLoader_.GetMapSize().x, mapLoader_.GetMapSize().y));
+	bgShape_.setFillColor(sf::Color(125, 255, 255));
 
 	createBloodParticleSystem();
 	createSmokeParticleSystem();
@@ -66,7 +66,8 @@ Game::Game()
 
 void Game::createBloodParticleSystem()
 {
-	bloodParticleSystem_.setTexture(textureManager_.getTexture("particle"));
+	bloodParticleSystem_.setTexture(textureManager_.getTexture("spriteSheet"));
+	bloodParticleSystem_.addTextureRect(sf::IntRect(0, 170, 10, 10));
 	thor::ColorGradient gradient;
 	gradient[0.f] = sf::Color::Red;
 	gradient[0.5f] = sf::Color(255, 112, 112);
@@ -79,7 +80,8 @@ void Game::createBloodParticleSystem()
 
 void Game::createSmokeParticleSystem()
 {
-	smokeParticleSystem_.setTexture(textureManager_.getTexture("smokeParticle"));
+	smokeParticleSystem_.setTexture(textureManager_.getTexture("spriteSheet"));
+	smokeParticleSystem_.addTextureRect(sf::IntRect(0, 190, 20, 20));
 	thor::ColorGradient gradient;
 	gradient[0.f] = sf::Color::Black;
 	gradient[0.5f] = sf::Color(77, 77, 77);
@@ -98,24 +100,9 @@ Game::~Game()
 
 void Game::loadTextures()
 {
-	textureManager_.addTexture("player", "Assets/player.png");
-	textureManager_.addTexture("coin1", "Assets/coin1.png");
-	textureManager_.addTexture("coin5", "Assets/coin5.png");
-	textureManager_.addTexture("coin100", "Assets/coin100.png");
-	textureManager_.addTexture("spike", "Assets/spike.png");
-	textureManager_.addTexture("healthBar", "Assets/healthbar.png");
-	textureManager_.addTexture("jumpPowerup", "Assets/jumpPowerup.png");
-	textureManager_.addTexture("spike left", "Assets/spike left.png");
-	textureManager_.addTexture("spike right", "Assets/spike right.png");
-	textureManager_.addTexture("spike down", "Assets/spike down.png");
-	textureManager_.addTexture("sky", "Assets/sky.png");
 	textureManager_.addTexture("particle", "Assets/particle.png");
 	textureManager_.addTexture("smokeParticle", "Assets/smokeParticle.png");
-	textureManager_.addTexture("enemy", "Assets/enemy.png");
-	textureManager_.addTexture("cannon", "Assets/cannon.png");
-	textureManager_.addTexture("cannonBall", "Assets/cannonBall.png");
-	textureManager_.addTexture("bullet", "Assets/bullet.png");
-	textureManager_.addTexture("enemyHealthBar", "Assets/enemyHealthBar.png");
+	textureManager_.addTexture("spriteSheet", "Assets/spriteSheet.png");
 }
 
 void Game::createEntities()
@@ -277,7 +264,7 @@ void Game::render()
 	{
 		window_.clear(sf::Color(1, 255, 255));
 
-		window_.draw(bgSprite_);
+		window_.draw(bgShape_);
 		window_.setView(view_);
 		window_.draw(mapLoader_);
 
@@ -370,7 +357,7 @@ void Game::handleMessage(Message& message)
 			GetHealthMessage msg("player");
 			sendMessage(msg);
 			if (msg.getHealth() >= 0) // TODO: Remove this when added checks for if the player is dead.
-				healthBar_.setTextureRect(sf::IntRect(0, 0, msg.getHealth() * HealthBarScale, healthBar_.getTextureRect().height));
+				healthBar_.setTextureRect(sf::IntRect(0, 150, msg.getHealth() * HealthBarScale, healthBar_.getTextureRect().height));
 			sendMessage(PauseEntityMessage("player", sf::seconds(1.f)));
 			healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
 				healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);

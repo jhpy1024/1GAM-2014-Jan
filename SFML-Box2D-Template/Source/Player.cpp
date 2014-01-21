@@ -35,8 +35,8 @@ Player::Player(const sf::Vector2f& position, Game* game)
 	, CannonBallHealthDecrease(SpikeHealthDecrease)
 	, FireDelay(sf::seconds(0.5f))
 {
-	sprite_.setTexture(game->getTextureManager().getTexture("player"));
-	sprite_.setTextureRect(sf::IntRect(0, 0, width_, height_));
+	sprite_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
+	sprite_.setTextureRect(sf::IntRect(262, 0, width_, height_));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 

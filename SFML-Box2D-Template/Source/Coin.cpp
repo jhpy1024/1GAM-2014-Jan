@@ -13,8 +13,21 @@ Coin::Coin(const sf::Vector2f& position, Game* game, int worth)
 {
 	++CoinId;
 
-	sprite_.setTexture(game->getTextureManager().getTexture("coin" + std::to_string(worth)));
-	sprite_.setTextureRect(sf::IntRect(0, 0, TextureWidth, TextureHeight));
+	sprite_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
+	switch (worth)
+	{
+	case 1:
+		sprite_.setTextureRect(sf::IntRect(128, 0, TextureWidth, TextureHeight));
+		break;
+	case 5:
+		sprite_.setTextureRect(sf::IntRect(163, 0, TextureWidth, TextureHeight));
+		break;
+	case 100:
+		sprite_.setTextureRect(sf::IntRect(198, 0, TextureWidth, TextureHeight));
+		break;
+	default:
+		break;
+	}
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 

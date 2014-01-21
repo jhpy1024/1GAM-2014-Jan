@@ -7,11 +7,16 @@ Spike::Spike(const sf::Vector2f& position, Game* game, const std::string& direct
 	, TextureWidth(32)
 	, TextureHeight(32)
 {
-	if (direction.empty())
-		sprite_.setTexture(game->getTextureManager().getTexture("spike"));
-	else
-		sprite_.setTexture(game->getTextureManager().getTexture("spike " + direction));
-	sprite_.setTextureRect(sf::IntRect(0, 0, TextureWidth, TextureHeight));
+	sprite_.setTexture(game_->getTextureManager().getTexture("spriteSheet"));
+	if (direction == "down")
+		sprite_.setTextureRect(sf::IntRect(0, 115, TextureWidth, TextureHeight));
+	else if (direction == "left")
+		sprite_.setTextureRect(sf::IntRect(32, 115, TextureWidth, TextureHeight));
+	else if (direction == "")
+		sprite_.setTextureRect(sf::IntRect(64, 115, TextureWidth, TextureHeight));
+	else if (direction == "right")
+		sprite_.setTextureRect(sf::IntRect(96, 115, TextureWidth, TextureHeight));
+
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 

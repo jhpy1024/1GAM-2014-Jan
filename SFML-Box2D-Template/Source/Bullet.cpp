@@ -12,7 +12,7 @@ Bullet::Bullet(const sf::Vector2f& position, int direction, Game* game)
 {
 	++Id;
 
-	sprite_.setTexture(game->getTextureManager().getTexture("bullet"));
+	sprite_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
 	sprite_.setTextureRect(sf::IntRect(0, 0, TextureWidth, TextureHeight));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);

@@ -12,8 +12,8 @@ JumpPowerup::JumpPowerup(const sf::Vector2f& position, Game* game)
 {
 	++Id;
 
-	sprite_.setTexture(game->getTextureManager().getTexture("jumpPowerup"));
-	sprite_.setTextureRect(sf::IntRect(0, 0, TextureWidth, TextureHeight));
+	sprite_.setTexture(game->getTextureManager().getTexture("spriteSheet"));
+	sprite_.setTextureRect(sf::IntRect(230, 0, TextureWidth, TextureHeight));
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
 
