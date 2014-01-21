@@ -100,8 +100,6 @@ Game::~Game()
 
 void Game::loadTextures()
 {
-	textureManager_.addTexture("particle", "Assets/particle.png");
-	textureManager_.addTexture("smokeParticle", "Assets/smokeParticle.png");
 	textureManager_.addTexture("spriteSheet", "Assets/spriteSheet.png");
 }
 
