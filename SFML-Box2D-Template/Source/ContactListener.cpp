@@ -1,6 +1,7 @@
 #include "../Include/Game.hpp"
 #include "../Include/Entity.hpp"
 #include "../Include/Bullet.hpp"
+#include "../Include/Shuriken.hpp"
 #include "../Include/CannonBall.hpp"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/HitSpikeMessage.hpp"
@@ -159,6 +160,30 @@ ContactListener::ContactListener(Game* game)
 			{
 				auto cannonBall = static_cast<CannonBall*>(entityB);
 				cannonBall->remove();
+			}
+		}
+	}
+	);
+
+	// shuriken vs ground
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId().find("shuriken") != entityA->getId().npos && entityB->getId() == "ground")
+			{
+				auto shuriken = static_cast<Shuriken*>(entityA);
+				shuriken->remove();
+			}
+			else if (entityA->getId() == "ground" && entityB->getId().find("shuriken") != entityB->getId().npos)
+			{
+				auto shuriken = static_cast<Shuriken*>(entityB);
+				shuriken->remove();
 			}
 		}
 	}
