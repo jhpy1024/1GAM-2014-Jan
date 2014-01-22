@@ -20,6 +20,7 @@ enum MessageType
 		HitCannonBallMsg,
 		CannonFiredMsg,
 		ShotEnemyMsg,
+		HitShurikenMsg,
 	};
 
 class Message

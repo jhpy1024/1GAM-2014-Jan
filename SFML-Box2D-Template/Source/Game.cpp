@@ -369,6 +369,7 @@ void Game::handleMessage(Message& message)
 		break;
 	case HitSpikeMsg:
 	case HitCannonBallMsg:
+	case HitShurikenMsg:
 		{	
 			bloodParticleSystem_.addEmitter(createBloodEmitter(), sf::seconds(0.05f));
 			shouldReset_ = true;

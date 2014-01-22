@@ -5,6 +5,7 @@
 #include "../Include/CannonBall.hpp"
 #include "../Include/GotCoinMessage.hpp"
 #include "../Include/HitSpikeMessage.hpp"
+#include "../Include/HitShurikenMessage.hpp"
 #include "../Include/ContactListener.hpp"
 #include "../Include/PlayerFootSensor.hpp"
 #include "../Include/ShotEnemyMessage.hpp"
@@ -82,6 +83,34 @@ ContactListener::ContactListener(Game* game)
 			{
 				auto cannonBall = static_cast<CannonBall*>(entityB);
 				HitCannonBallMessage msg("all", *cannonBall);
+				game->sendMessage(msg);
+			}
+		}
+	}
+	);
+
+	// player vs shuriken
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId().find("shuriken") != entityA->getId().npos && entityB->getId() == "player")
+			{
+				auto shuriken = static_cast<Shuriken*>(entityA);
+				shuriken->remove();
+				HitShurikenMessage msg("all");
+				game->sendMessage(msg);
+			}
+			else if (entityA->getId() == "player" && entityB->getId().find("shuriken") != entityB->getId().npos)
+			{
+				auto shuriken = static_cast<CannonBall*>(entityB);
+				shuriken->remove();
+				HitShurikenMessage msg("all");
 				game->sendMessage(msg);
 			}
 		}

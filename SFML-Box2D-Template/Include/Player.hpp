@@ -46,6 +46,7 @@ private:
 	sf::Clock hurtClock_;
 	const sf::Time HurtDelay;
 	const float SpikeHealthDecrease;
+	const float ShurikenHealthDecrease;
 	const float CannonBallHealthDecrease;
 
 	sf::Clock fireClock_;
