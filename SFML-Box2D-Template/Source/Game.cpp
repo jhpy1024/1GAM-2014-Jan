@@ -37,6 +37,7 @@ Game::Game()
 	, hasFocus_(true)
 	, shouldReset_(false)
 	, HealthBarScale(4)
+	, rot(0)
 {
 	createEntities();
 	createWorld();
@@ -189,12 +190,15 @@ void Game::createWorld()
 			for (auto& obj : layer.objects)
 			{
 				std::string direction = "left";
+				float angle = 90.f;
 
 				if (!obj.GetPropertyString("direction").empty())
 					direction = obj.GetPropertyString("direction");
+				if (!obj.GetPropertyString("angle").empty())
+					angle = std::stof(obj.GetPropertyString("angle"));
 
 				entities_.push_back(std::unique_ptr<Entity>(
-					new MonkeyEnemy(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this, direction)));
+					new MonkeyEnemy(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this, direction, angle)));
 			} 
 		}
 	}
@@ -267,6 +271,8 @@ void Game::update(sf::Time delta)
 
 		if (shouldReset_)
 			reset();
+
+		rot = (static_cast<int>(rot) + 1) % 360;
 	}
 }
 

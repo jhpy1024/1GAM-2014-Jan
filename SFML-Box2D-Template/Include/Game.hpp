@@ -88,6 +88,8 @@ private:
 	std::vector<Entity*> entitiesToAdd_;
 
 	const int HealthBarScale;
+
+	float rot;
 };
 
 #endif

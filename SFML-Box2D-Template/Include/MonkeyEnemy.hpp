@@ -8,12 +8,16 @@ class Game;
 class MonkeyEnemy : public Entity
 {
 public:
-	MonkeyEnemy(const sf::Vector2f& position, Game* game, const std::string& direction);
+	MonkeyEnemy(const sf::Vector2f& position, Game* game, const std::string& direction, float fireAngle);
 
 	void handleInput() override;
 	void update(sf::Time delta) override;
 	void render(sf::RenderWindow& window) override;
 	void handleMessage(Message& message) override;
+
+private:
+	void fireShuriken();
+	bool inRangeOfPlayer();
 
 private:
 	static int Id;
@@ -22,6 +26,12 @@ private:
 	const int Height;
 
 	Direction direction_;
+
+	sf::Clock fireClock_;
+	const sf::Time FireDelay;
+	const float FireRange;
+	float fireAngle_;
+	const float ShurikenSpeed;
 };
 
 #endif

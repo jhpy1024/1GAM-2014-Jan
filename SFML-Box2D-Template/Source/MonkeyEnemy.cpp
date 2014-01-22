@@ -1,13 +1,19 @@
 #include "../Include/Game.hpp"
 #include "../Include/Utils.hpp"
+#include "../Include/Shuriken.hpp"
 #include "../Include/MonkeyEnemy.hpp"
+#include "../Include/GetPositionMessage.hpp"
 
 int MonkeyEnemy::Id = 0;
 
-MonkeyEnemy::MonkeyEnemy(const sf::Vector2f& position, Game* game, const std::string& direction)
+MonkeyEnemy::MonkeyEnemy(const sf::Vector2f& position, Game* game, const std::string& direction, float fireAngle)
 	: Entity(position, game, "monkeyEnemy " + std::to_string(Id))
 	, Width(64)
 	, Height(75)
+	, FireDelay(sf::seconds(1.f + (std::rand() % 3)))
+	, FireRange(550.f)
+	, fireAngle_(fireAngle)
+	, ShurikenSpeed(0.5f)
 {
 	++Id;
 
@@ -54,12 +60,31 @@ void MonkeyEnemy::handleInput()
 
 void MonkeyEnemy::update(sf::Time delta)
 {
+	if (fireClock_.getElapsedTime() >= FireDelay && inRangeOfPlayer())
+	{
+		fireShuriken();
+		fireClock_.restart();
+	}
+}
 
+void MonkeyEnemy::fireShuriken()
+{
+	float rotationRads = (fireAngle_ - 90.f) * (3.14159f / 180.f);
+	game_->addEntity(new Shuriken(sprite_.getPosition(), sf::Vector2f(ShurikenSpeed * std::cos(rotationRads), ShurikenSpeed * std::sin(rotationRads)), game_));
+}
+
+bool MonkeyEnemy::inRangeOfPlayer()
+{
+	GetPositionMessage msg("player");
+	game_->sendMessage(msg);
+
+	float distToPlayerSquared = std::pow((sprite_.getPosition().x - msg.getPosition().x), 2) + std::pow((sprite_.getPosition().y - msg.getPosition().y), 2);
+
+	return std::abs(distToPlayerSquared) <= std::pow(FireRange, 2);
 }
 
 void MonkeyEnemy::render(sf::RenderWindow& window) 
 {
-
 	window.draw(sprite_);
 }
 
