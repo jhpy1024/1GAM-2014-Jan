@@ -15,6 +15,14 @@
 #include "tmx/MapLoader.h"
 #include "TextureManager.hpp"
 
+enum State
+{
+	PlayState,
+	MenuState,
+	WinState,
+	LoseState,
+};
+
 class Game
 {
 public:
@@ -32,10 +40,32 @@ public:
 
 	void addEntity(Entity* entity);
 
+	void setState(State state);
+
 private:
 	void createEntities();
 	void createWorld();
 	void loadTextures();
+
+	void initPlayState();
+	void initMenuState();
+	void initWinState();
+	void initLoseState();
+
+	void handleInputPlay();
+	void handleInputMenu();
+	void handleInputWin();
+	void handleInputLose();
+
+	void updatePlay(sf::Time delta);
+	void updateMenu(sf::Time delta);
+	void updateWin(sf::Time delta);
+	void updateLose(sf::Time delta);
+
+	void renderPlay();
+	void renderMenu();
+	void renderWin();
+	void renderLose();
 
 	void handleInput();
 	void update(sf::Time delta);
@@ -90,6 +120,8 @@ private:
 	const int HealthBarScale;
 
 	float rot;
+
+	State state_;
 };
 
 #endif

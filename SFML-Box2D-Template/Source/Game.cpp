@@ -32,16 +32,46 @@ Game::Game()
 	, TimePerFrame(sf::seconds(1.f / 60.f))
 	, Gravity(0.f, 10.f)
 	, window_(sf::VideoMode(Width, Height), Title, sf::Style::Close)
-	, world_(new b2World(Gravity))
 	, mapLoader_("Assets/")
 	, hasFocus_(true)
 	, shouldReset_(false)
 	, HealthBarScale(4)
 	, rot(0)
 {
-	createEntities();
-	createWorld();
+	
 	loadTextures();
+	setState(PlayState);
+}
+
+void Game::setState(State state)
+{
+	switch (state)
+	{
+	case PlayState:
+		state_ = PlayState;
+		initPlayState();
+		break;
+	case MenuState:
+		state_ = MenuState;
+		initMenuState();
+		break;
+	case WinState:
+		state_ = WinState;
+		initWinState();
+		break;
+	case LoseState:
+		state_ = LoseState;
+		initLoseState();
+		break;
+	default:
+		break;
+	}
+}
+
+void Game::initPlayState()
+{
+	world_ = new b2World(Gravity);
+	createWorld();
 
 	coinsFont_.loadFromFile("Assets/coinsFont.ttf");
 	coinsText_.setFont(coinsFont_);
@@ -64,6 +94,124 @@ Game::Game()
 
 	createBloodParticleSystem();
 	createSmokeParticleSystem();
+
+}
+
+void Game::initMenuState()
+{
+
+}
+
+void Game::initWinState()
+{
+
+}
+
+void Game::initLoseState()
+{
+
+}
+
+void Game::handleInputPlay()
+{
+	for (auto& entity : entities_)
+		entity->handleInput();
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		shouldReset_ = true;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		view_.zoom(1.2f);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		view_.zoom(0.8f);
+}
+
+void Game::handleInputMenu()
+{
+
+}
+
+void Game::handleInputWin()
+{
+
+}
+
+void Game::handleInputLose()
+{
+
+}
+
+void Game::updatePlay(sf::Time delta)
+{
+	updateView();
+	bloodParticleSystem_.update(delta);
+	smokeParticleSystem_.update(delta);
+		
+	for (auto& entity : entities_)
+		entity->update(delta);
+
+	world_->Step(TimePerFrame.asSeconds(), 6, 3);
+
+	entities_.erase(std::remove_if(entities_.begin(), entities_.end(), [](std::unique_ptr<Entity>& ent) { return ent->shouldRemove(); }), std::end(entities_));
+	std::for_each(entitiesToAdd_.begin(), entitiesToAdd_.end(), [&](Entity* ent) { entities_.push_back(std::unique_ptr<Entity>(ent)); });
+	entitiesToAdd_.clear();
+
+	if (shouldReset_)
+		reset();
+
+	rot = (static_cast<int>(rot) + 1) % 360;
+}
+
+void Game::updateMenu(sf::Time delta)
+{
+
+}
+
+void Game::updateWin(sf::Time delta)
+{
+
+}
+
+void Game::updateLose(sf::Time delta)
+{
+
+}
+
+void Game::renderPlay()
+{
+	window_.clear(sf::Color(1, 255, 255));
+
+	window_.draw(bgShape_);
+	window_.setView(view_);
+	window_.draw(mapLoader_);
+
+	for (auto& entity : entities_)
+		entity->render(window_);
+
+	window_.setView(window_.getDefaultView());
+	window_.draw(coinsText_);
+	window_.draw(healthBar_);
+	
+	window_.setView(view_);
+	window_.draw(bloodParticleSystem_);
+	window_.draw(smokeParticleSystem_);
+
+	window_.display();
+}
+
+void Game::renderMenu()
+{
+
+}
+
+void Game::renderWin()
+{
+
+}
+
+void Game::renderLose()
+{
+
 }
 
 void Game::createBloodParticleSystem()
@@ -103,11 +251,6 @@ Game::~Game()
 void Game::loadTextures()
 {
 	textureManager_.addTexture("spriteSheet", "Assets/spriteSheet.png");
-}
-
-void Game::createEntities()
-{
-	entities_.push_back(std::unique_ptr<Entity>(new Player(sf::Vector2f(Width / 4.f, 100.f), this)));
 }
 
 void Game::createWorld()
@@ -162,11 +305,9 @@ void Game::createWorld()
 		{
 			for (auto& obj : layer.objects)
 			{
-				SetPositionMessage msg("player", obj.GetAABB().left + obj.GetAABB().width / 2.f,
+				playerStartPos_ = sf::Vector2f(obj.GetAABB().left + obj.GetAABB().width / 2.f,
 					obj.GetAABB().top - obj.GetAABB().height / 2.f);
-				sendMessage(msg);
-				playerStartPos_.x = msg.getPosition().x;
-				playerStartPos_.y = msg.getPosition().y;
+				entities_.push_back(std::unique_ptr<Entity>(new Player(playerStartPos_, this)));
 			}
 		}
 		else if (layer.name == "JumpPowerups")
@@ -229,16 +370,23 @@ void Game::handleInput()
 
 	if (hasFocus_)
 	{
-		for (auto& entity : entities_)
-		entity->handleInput();
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-			shouldReset_ = true;
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-			view_.zoom(1.2f);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-			view_.zoom(0.8f);
+		switch (state_)
+		{
+		case PlayState:
+			handleInputPlay();
+			break;
+		case MenuState:
+			handleInputMenu();
+			break;
+		case WinState:
+			handleInputWin();
+			break;
+		case LoseState:
+			handleInputLose();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -256,23 +404,23 @@ void Game::update(sf::Time delta)
 {
 	if (hasFocus_)
 	{
-		updateView();
-		bloodParticleSystem_.update(delta);
-		smokeParticleSystem_.update(delta);
-		
-		for (auto& entity : entities_)
-			entity->update(delta);
-
-		world_->Step(TimePerFrame.asSeconds(), 6, 3);
-
-		entities_.erase(std::remove_if(entities_.begin(), entities_.end(), [](std::unique_ptr<Entity>& ent) { return ent->shouldRemove(); }), std::end(entities_));
-		std::for_each(entitiesToAdd_.begin(), entitiesToAdd_.end(), [&](Entity* ent) { entities_.push_back(std::unique_ptr<Entity>(ent)); });
-		entitiesToAdd_.clear();
-
-		if (shouldReset_)
-			reset();
-
-		rot = (static_cast<int>(rot) + 1) % 360;
+		switch (state_)
+		{
+		case PlayState:
+			updatePlay(delta);
+			break;
+		case MenuState:
+			updateMenu(delta);
+			break;
+		case WinState:
+			updateWin(delta);
+			break;
+		case LoseState:
+			updateLose(delta);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -280,24 +428,23 @@ void Game::render()
 {
 	if (hasFocus_)
 	{
-		window_.clear(sf::Color(1, 255, 255));
-
-		window_.draw(bgShape_);
-		window_.setView(view_);
-		window_.draw(mapLoader_);
-
-		for (auto& entity : entities_)
-			entity->render(window_);
-
-		window_.setView(window_.getDefaultView());
-		window_.draw(coinsText_);
-		window_.draw(healthBar_);
-
-		window_.setView(view_);
-		window_.draw(bloodParticleSystem_);
-		window_.draw(smokeParticleSystem_);
-
-		window_.display();
+		switch (state_)
+		{
+		case PlayState:
+			renderPlay();
+			break;
+		case MenuState:
+			renderMenu();
+			break;
+		case WinState:
+			renderWin();
+			break;
+		case LoseState:
+			renderLose();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
