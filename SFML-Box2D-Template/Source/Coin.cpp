@@ -30,7 +30,6 @@ Coin::Coin(const sf::Vector2f& position, Game* game, int worth)
 	}
 	sprite_.setOrigin(sprite_.getLocalBounds().left + sprite_.getLocalBounds().width / 2.f, 
 		sprite_.getLocalBounds().top + sprite_.getLocalBounds().height / 2.f);
-	sprite_.setColor(sf::Color::Red);
 
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(pixelsToMeters(position.x), pixelsToMeters(position.y));

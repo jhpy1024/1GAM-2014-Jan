@@ -27,13 +27,11 @@ ContactListener::ContactListener(Game* game)
 
 			if (entityA->getId() == "playerFootSensor" && entityB->getId() == "ground")
 			{
-				std::printf("Player hit ground\n");
 				auto sensor = static_cast<PlayerFootSensor*>(entityA);
 				sensor->setNumContacts(sensor->getNumContacts() + 1);
 			}
 			else if (entityA->getId() == "ground" && entityB->getId() == "playerFootSensor")
 			{
-				std::printf("Player hit ground\n");
 				auto sensor = static_cast<PlayerFootSensor*>(entityB);
 				sensor->setNumContacts(sensor->getNumContacts() + 1);
 			}
@@ -53,13 +51,11 @@ ContactListener::ContactListener(Game* game)
 
 			if (entityA->getId().find("coin") != entityA->getId().npos && entityB->getId() == "player")
 			{
-				std::printf("Player hit coin\n");
 				auto coin = static_cast<Coin*>(entityA);
 				game->sendMessage(GotCoinMessage("all", entityA->getId(), *coin));
 			}
 			else if (entityA->getId() == "player" && entityB->getId().find("coin") != entityB->getId().npos)
 			{
-				std::printf("Player hit coin\n");
 				auto coin = static_cast<Coin*>(entityB);
 				game->sendMessage(GotCoinMessage("all", entityB->getId(), *coin));
 			}
@@ -79,14 +75,12 @@ ContactListener::ContactListener(Game* game)
 
 			if (entityA->getId().find("cannonBall") != entityA->getId().npos && entityB->getId() == "player")
 			{
-				std::printf("Player hit cannonball\n");
 				auto cannonBall = static_cast<CannonBall*>(entityA);
 				HitCannonBallMessage msg("all", *cannonBall);
 				game->sendMessage(msg);
 			}
 			else if (entityA->getId() == "player" && entityB->getId().find("cannonBall") != entityB->getId().npos)
 			{
-				std::printf("Player hit cannonball\n");
 				auto cannonBall = static_cast<CannonBall*>(entityB);
 				HitCannonBallMessage msg("all", *cannonBall);
 				game->sendMessage(msg);
@@ -107,7 +101,6 @@ ContactListener::ContactListener(Game* game)
 
 			if (entityA->getId().find("shuriken") != entityA->getId().npos && entityB->getId() == "player")
 			{
-				std::printf("Player hit shuriken\n");
 				auto shuriken = static_cast<Shuriken*>(entityA);
 				shuriken->remove();
 				HitShurikenMessage msg("all");
@@ -115,7 +108,6 @@ ContactListener::ContactListener(Game* game)
 			}
 			else if (entityA->getId() == "player" && entityB->getId().find("shuriken") != entityB->getId().npos)
 			{
-				std::printf("Player hit shuriken\n");
 				auto shuriken = static_cast<CannonBall*>(entityB);
 				shuriken->remove();
 				HitShurikenMessage msg("all");
@@ -137,14 +129,12 @@ ContactListener::ContactListener(Game* game)
 
 			if (entityA->getId().find("jumpPowerup") != entityA->getId().npos && entityB->getId() == "player")
 			{
-				std::printf("Player hit jump powerup\n");
 				auto powerup = static_cast<JumpPowerup*>(entityA);
 				GotJumpPowerupMessage msg("all", *powerup);
 				game->sendMessage(msg);
 			}
 			else if (entityA->getId() == "player" && entityB->getId().find("jumpPowerup") != entityB->getId().npos)
 			{
-				std::printf("Player hit jump powerup\n");
 				auto powerup = static_cast<JumpPowerup*>(entityB);
 				GotJumpPowerupMessage msg("all", *powerup);
 				game->sendMessage(msg);
@@ -167,12 +157,10 @@ ContactListener::ContactListener(Game* game)
 
 			if (entityA->getId() == "player" && entityB->getId() == "spike")
 			{
-				std::printf("Player hit spikes\n");
 				hitSpike = true;
 			}
 			else if (entityA->getId() == "spike" && entityB->getId() == "player")
 			{
-				std::printf("Player hit spikes\n");
 				hitSpike = true;
 			}
 
