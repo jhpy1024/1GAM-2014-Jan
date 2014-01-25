@@ -32,40 +32,14 @@ Game::Game()
 	, TimePerFrame(sf::seconds(1.f / 60.f))
 	, Gravity(0.f, 10.f)
 	, window_(sf::VideoMode(Width, Height), Title, sf::Style::Close)
-	, world_(new b2World(Gravity))
 	, mapLoader_("Assets/")
 	, hasFocus_(true)
 	, shouldReset_(false)
 	, HealthBarScale(4)
 	, rot(0)
 {
-	createEntities();
-	createWorld();
-	loadTextures();
-
-	coinsFont_.loadFromFile("Assets/coinsFont.ttf");
-	coinsText_.setFont(coinsFont_);
-	coinsText_.setColor(sf::Color::Red);
-	coinsText_.setString("Coins: 0");
-	coinsText_.setCharacterSize(30);
-	coinsText_.setPosition(32.f, 30.f);
-
-	healthBar_.setTexture(textureManager_.getTexture("spriteSheet"));
-	healthBar_.setTextureRect(sf::IntRect(0, 150, 400, 15));
-	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
-		healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
-	healthBar_.setPosition(Width / 2.f, 50.f);
-	
-	view_.setCenter(Width / 2.f, Height / 2.f);
-	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
-
-	bgShape_.setSize(sf::Vector2f(mapLoader_.GetMapSize().x, mapLoader_.GetMapSize().y));
-	bgShape_.setFillColor(sf::Color(125, 255, 255));
-
-	createBloodParticleSystem();
-	createSmokeParticleSystem();
-
 	setState(Play);
+	loadTextures();
 }
 
 void Game::setState(GameState state)
@@ -95,7 +69,32 @@ void Game::setState(GameState state)
 
 void Game::initPlay()
 {
+	world_ = new b2World(Gravity);
 
+	createEntities();
+	createWorld();
+
+	coinsFont_.loadFromFile("Assets/coinsFont.ttf");
+	coinsText_.setFont(coinsFont_);
+	coinsText_.setColor(sf::Color::Red);
+	coinsText_.setString("Coins: 0");
+	coinsText_.setCharacterSize(30);
+	coinsText_.setPosition(32.f, 30.f);
+
+	healthBar_.setTexture(textureManager_.getTexture("spriteSheet"));
+	healthBar_.setTextureRect(sf::IntRect(0, 150, 400, 15));
+	healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
+		healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
+	healthBar_.setPosition(Width / 2.f, 50.f);
+
+	view_.setCenter(Width / 2.f, Height / 2.f);
+	view_.setSize(static_cast<float>(Width), static_cast<float>(Height));
+
+	bgShape_.setSize(sf::Vector2f(mapLoader_.GetMapSize().x, mapLoader_.GetMapSize().y));
+	bgShape_.setFillColor(sf::Color(125, 255, 255));
+
+	createBloodParticleSystem();
+	createSmokeParticleSystem();
 }
 
 void Game::initMenu()
