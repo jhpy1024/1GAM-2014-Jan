@@ -89,6 +89,28 @@ ContactListener::ContactListener(Game* game)
 	}
 	);
 
+	// player vs finish
+	beginFunctions_.push_back
+	(
+	[game](void* bodyUserDataA, void* bodyUserDataB)
+	{
+		if (bodyUserDataA && bodyUserDataB)
+		{
+			auto entityA = static_cast<Entity*>(bodyUserDataA);
+			auto entityB = static_cast<Entity*>(bodyUserDataB);
+
+			if (entityA->getId() == "finish" && entityB->getId() == "player")
+			{
+				game->finish();
+			}
+			else if (entityA->getId() == "player" && entityB->getId() == "finish")
+			{
+				game->finish();
+			}
+		}
+	}
+	);
+
 	// player vs shuriken
 	beginFunctions_.push_back
 	(

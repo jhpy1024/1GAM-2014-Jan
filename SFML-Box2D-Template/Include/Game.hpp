@@ -39,6 +39,7 @@ public:
 	std::vector<std::unique_ptr<Entity>>& getEntities() { return entities_; }
 
 	void addEntity(Entity* entity);
+	void finish();
 
 private:
 	void createEntities();
@@ -121,6 +122,9 @@ private:
 	float rot;
 
 	GameState state_;
+
+	bool finished_;
+	sf::Text finishedText_;
 };
 
 #endif

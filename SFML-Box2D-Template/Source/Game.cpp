@@ -5,6 +5,7 @@
 #include "../Include/Utils.hpp"
 #include "../Include/Player.hpp"
 #include "../Include/Ground.hpp"
+#include "../Include/Finish.hpp"
 #include "../Include/CannonBall.hpp"
 #include "../Include/MonkeyEnemy.hpp"
 #include "../Include/JumpPowerup.hpp"
@@ -37,9 +38,15 @@ Game::Game()
 	, shouldReset_(false)
 	, HealthBarScale(4)
 	, rot(0)
+	, finished_(false)
 {
 	setState(Play);
 	loadTextures();
+}
+
+void Game::finish()
+{
+	finished_ = true;
 }
 
 void Game::setState(GameState state)
@@ -80,6 +87,14 @@ void Game::initPlay()
 	coinsText_.setString("Coins: 0");
 	coinsText_.setCharacterSize(30);
 	coinsText_.setPosition(32.f, 30.f);
+	
+	finishedText_.setFont(coinsFont_);
+	finishedText_.setColor(sf::Color::Black);
+	finishedText_.setString("You won!");
+	finishedText_.setCharacterSize(30);
+	finishedText_.setOrigin(finishedText_.getLocalBounds().left + finishedText_.getLocalBounds().width / 2.f,
+		finishedText_.getLocalBounds().top + finishedText_.getLocalBounds().height / 2.f);
+	finishedText_.setPosition(Width / 2.f, Height / 2.f);
 
 	healthBar_.setTexture(textureManager_.getTexture("spriteSheet"));
 	healthBar_.setTextureRect(sf::IntRect(0, 150, 400, 15));
@@ -114,6 +129,7 @@ void Game::initLose()
 
 void Game::handleInputPlay()
 {
+	if (finished_) return;
 	for (auto& entity : entities_)
 		entity->handleInput();
 
@@ -143,6 +159,8 @@ void Game::handleInputLose()
 
 void Game::updatePlay(sf::Time delta)
 {
+	if (finished_) return;
+
 	updateView();
 	bloodParticleSystem_.update(delta);
 	smokeParticleSystem_.update(delta);
@@ -180,6 +198,14 @@ void Game::updateLose(sf::Time delta)
 void Game::renderPlay()
 {
 	window_.clear(sf::Color(1, 255, 255));
+
+	if (finished_)
+	{
+		window_.clear(sf::Color::Red);
+		window_.draw(finishedText_);
+		window_.display();
+		return;
+	}
 
 	window_.draw(bgShape_);
 	window_.setView(view_);
@@ -347,6 +373,14 @@ void Game::createWorld()
 
 				entities_.push_back(std::unique_ptr<Entity>(
 					new MonkeyEnemy(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this, direction, angle)));
+			} 
+		}
+		else if (layer.name == "Finish")
+		{
+			for (auto& obj : layer.objects)
+			{
+				entities_.push_back(std::unique_ptr<Entity>(
+					new Finish(sf::Vector2f(obj.GetPosition().x + obj.GetAABB().width / 2.f, obj.GetPosition().y + obj.GetAABB().height / 2.f), this)));
 			} 
 		}
 	}

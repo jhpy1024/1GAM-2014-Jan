@@ -3621,4 +3621,12 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="Finish" width="160" height="22">
+  <object x="544" y="96" width="32" height="32"/>
+  <object x="576" y="96" width="32" height="32"/>
+  <object x="544" y="128" width="32" height="32"/>
+  <object x="576" y="128" width="32" height="32"/>
+  <object x="544" y="160" width="32" height="32"/>
+  <object x="576" y="160" width="32" height="32"/>
+ </objectgroup>
 </map>
