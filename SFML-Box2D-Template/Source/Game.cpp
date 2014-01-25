@@ -64,6 +64,155 @@ Game::Game()
 
 	createBloodParticleSystem();
 	createSmokeParticleSystem();
+
+	setState(Play);
+}
+
+void Game::setState(GameState state)
+{
+	switch (state)
+	{
+	case Play:
+		initPlay();
+		state_ = Play;
+		break;
+	case Menu:
+		initMenu();
+		state_ = Menu;
+		break;
+	case Win:
+		initWin();
+		state_ = Win;
+		break;
+	case Lose:
+		initLose();
+		state_ = Lose;
+		break;
+	default:
+		break;
+	}
+}
+
+void Game::initPlay()
+{
+
+}
+
+void Game::initMenu()
+{
+
+}
+
+void Game::initWin()
+{
+
+}
+
+void Game::initLose()
+{
+
+}
+
+void Game::handleInputPlay()
+{
+	for (auto& entity : entities_)
+		entity->handleInput();
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		shouldReset_ = true;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		view_.zoom(1.2f);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		view_.zoom(0.8f);
+}
+
+void Game::handleInputMenu()
+{
+
+}
+
+void Game::handleInputWin()
+{
+
+}
+
+void Game::handleInputLose()
+{
+
+}
+
+void Game::updatePlay(sf::Time delta)
+{
+	updateView();
+	bloodParticleSystem_.update(delta);
+	smokeParticleSystem_.update(delta);
+		
+	for (auto& entity : entities_)
+		entity->update(delta);
+
+	world_->Step(TimePerFrame.asSeconds(), 6, 3);
+
+	entities_.erase(std::remove_if(entities_.begin(), entities_.end(), [](std::unique_ptr<Entity>& ent) { return ent->shouldRemove(); }), std::end(entities_));
+	std::for_each(entitiesToAdd_.begin(), entitiesToAdd_.end(), [&](Entity* ent) { entities_.push_back(std::unique_ptr<Entity>(ent)); });
+	entitiesToAdd_.clear();
+
+	if (shouldReset_)
+		reset();
+
+	rot = (static_cast<int>(rot) + 1) % 360;
+}
+
+void Game::updateMenu(sf::Time delta)
+{
+
+}
+
+void Game::updateWin(sf::Time delta)
+{
+
+}
+
+void Game::updateLose(sf::Time delta)
+{
+
+}
+
+void Game::renderPlay()
+{
+	window_.clear(sf::Color(1, 255, 255));
+
+	window_.draw(bgShape_);
+	window_.setView(view_);
+	window_.draw(mapLoader_);
+
+	for (auto& entity : entities_)
+		entity->render(window_);
+
+	window_.setView(window_.getDefaultView());
+	window_.draw(coinsText_);
+	window_.draw(healthBar_);
+
+	window_.setView(view_);
+	window_.draw(bloodParticleSystem_);
+	window_.draw(smokeParticleSystem_);
+
+	window_.display();
+}
+
+void Game::renderMenu()
+{
+
+}
+
+void Game::renderWin()
+{
+
+}
+
+void Game::renderLose()
+{
+
 }
 
 void Game::createBloodParticleSystem()
@@ -229,16 +378,23 @@ void Game::handleInput()
 
 	if (hasFocus_)
 	{
-		for (auto& entity : entities_)
-		entity->handleInput();
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-			shouldReset_ = true;
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-			view_.zoom(1.2f);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-			view_.zoom(0.8f);
+		switch (state_)
+		{
+		case Play:
+			handleInputPlay();
+			break;
+		case Menu:
+			handleInputMenu();
+			break;
+		case Win:
+			handleInputWin();
+			break;
+		case Lose:
+			handleInputLose();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -256,23 +412,23 @@ void Game::update(sf::Time delta)
 {
 	if (hasFocus_)
 	{
-		updateView();
-		bloodParticleSystem_.update(delta);
-		smokeParticleSystem_.update(delta);
-		
-		for (auto& entity : entities_)
-			entity->update(delta);
-
-		world_->Step(TimePerFrame.asSeconds(), 6, 3);
-
-		entities_.erase(std::remove_if(entities_.begin(), entities_.end(), [](std::unique_ptr<Entity>& ent) { return ent->shouldRemove(); }), std::end(entities_));
-		std::for_each(entitiesToAdd_.begin(), entitiesToAdd_.end(), [&](Entity* ent) { entities_.push_back(std::unique_ptr<Entity>(ent)); });
-		entitiesToAdd_.clear();
-
-		if (shouldReset_)
-			reset();
-
-		rot = (static_cast<int>(rot) + 1) % 360;
+		switch (state_)
+		{
+		case Play:
+			updatePlay(delta);
+			break;
+		case Menu:
+			updateMenu(delta);
+			break;
+		case Win:
+			updateWin(delta);
+			break;
+		case Lose:
+			updateLose(delta);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -280,24 +436,23 @@ void Game::render()
 {
 	if (hasFocus_)
 	{
-		window_.clear(sf::Color(1, 255, 255));
-
-		window_.draw(bgShape_);
-		window_.setView(view_);
-		window_.draw(mapLoader_);
-
-		for (auto& entity : entities_)
-			entity->render(window_);
-
-		window_.setView(window_.getDefaultView());
-		window_.draw(coinsText_);
-		window_.draw(healthBar_);
-
-		window_.setView(view_);
-		window_.draw(bloodParticleSystem_);
-		window_.draw(smokeParticleSystem_);
-
-		window_.display();
+		switch (state_)
+		{
+		case Play:
+			renderPlay();
+			break;
+		case Menu:
+			renderMenu();
+			break;
+		case Win:
+			renderWin();
+			break;
+		case Lose:
+			renderLose();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
