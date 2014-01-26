@@ -549,7 +549,9 @@ void Game::updateView()
 	GetPositionMessage msg("player");
 	sendMessage(msg);
 	if ((msg.getPosition().x >= Width / 2.f) && (msg.getPosition().x <= mapLoader_.GetMapSize().x - Width / 2.f))
-		view_.setCenter(sf::Vector2f(msg.getPosition().x, Height / 2.f));
+		view_.setCenter(sf::Vector2f(msg.getPosition().x, view_.getCenter().y));
+	if ((msg.getPosition().y >= Height / 2.f) && (msg.getPosition().y <= mapLoader_.GetMapSize().y - Height / 2.f))
+		view_.setCenter(sf::Vector2f(view_.getCenter().x, msg.getPosition().y));
 }
 
 void Game::sendMessage(Message& message)
