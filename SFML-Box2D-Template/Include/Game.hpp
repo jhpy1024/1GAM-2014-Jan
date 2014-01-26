@@ -125,6 +125,8 @@ private:
 
 	bool finished_;
 	sf::Text finishedText_;
+	bool died_;
+	sf::Text diedText_;
 };
 
 #endif

@@ -39,6 +39,7 @@ Game::Game()
 	, HealthBarScale(4)
 	, rot(0)
 	, finished_(false)
+	, died_(false)
 {
 	setState(Play);
 	loadTextures();
@@ -90,11 +91,19 @@ void Game::initPlay()
 	
 	finishedText_.setFont(coinsFont_);
 	finishedText_.setColor(sf::Color::Black);
-	finishedText_.setString("You won!");
+	finishedText_.setString("You win!");
 	finishedText_.setCharacterSize(30);
 	finishedText_.setOrigin(finishedText_.getLocalBounds().left + finishedText_.getLocalBounds().width / 2.f,
 		finishedText_.getLocalBounds().top + finishedText_.getLocalBounds().height / 2.f);
 	finishedText_.setPosition(Width / 2.f, Height / 2.f);
+
+	diedText_.setFont(coinsFont_);
+	diedText_.setColor(sf::Color::Black);
+	diedText_.setString("You died, you suck!");
+	diedText_.setCharacterSize(30);
+	diedText_.setOrigin(diedText_.getLocalBounds().left + diedText_.getLocalBounds().width / 2.f,
+		diedText_.getLocalBounds().top + diedText_.getLocalBounds().height / 2.f);
+	diedText_.setPosition(Width / 2.f, Height / 2.f);
 
 	healthBar_.setTexture(textureManager_.getTexture("spriteSheet"));
 	healthBar_.setTextureRect(sf::IntRect(0, 150, 400, 15));
@@ -129,7 +138,7 @@ void Game::initLose()
 
 void Game::handleInputPlay()
 {
-	if (finished_) return;
+	if (finished_ || died_) return;
 	for (auto& entity : entities_)
 		entity->handleInput();
 
@@ -159,7 +168,7 @@ void Game::handleInputLose()
 
 void Game::updatePlay(sf::Time delta)
 {
-	if (finished_) return;
+	if (finished_ || died_) return;
 
 	updateView();
 	bloodParticleSystem_.update(delta);
@@ -201,8 +210,18 @@ void Game::renderPlay()
 
 	if (finished_)
 	{
-		window_.clear(sf::Color::Red);
+		window_.setView(window_.getDefaultView());
+		window_.clear(sf::Color::Green);
 		window_.draw(finishedText_);
+		window_.display();
+		return;
+	}
+
+	if (died_)
+	{
+		window_.setView(window_.getDefaultView());
+		window_.clear(sf::Color::Red);
+		window_.draw(diedText_);
 		window_.display();
 		return;
 	}
@@ -563,8 +582,10 @@ void Game::handleMessage(Message& message)
 			shouldReset_ = true;
 			GetHealthMessage msg("player");
 			sendMessage(msg);
-			if (msg.getHealth() >= 0) // TODO: Remove this when added checks for if the player is dead.
+			if (msg.getHealth() > 0) 
 				healthBar_.setTextureRect(sf::IntRect(0, 150, msg.getHealth() * HealthBarScale, healthBar_.getTextureRect().height));
+			else
+				died_ = true;
 			sendMessage(PauseEntityMessage("player", sf::seconds(1.f)));
 			healthBar_.setOrigin(healthBar_.getLocalBounds().left + healthBar_.getLocalBounds().width / 2.f,
 				healthBar_.getLocalBounds().top + healthBar_.getLocalBounds().height / 2.f);
